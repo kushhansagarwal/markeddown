@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from imwatermark import WatermarkEncoder, WatermarkDecoder
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -12,6 +13,15 @@ from PIL import Image
 import json
 
 app = FastAPI()
+
+# Allow CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 uri = "mongodb+srv://markeddown:6i0w9fFQqDHrEYsR@markeddown.fdnkd6g.mongodb.net/?retryWrites=true&w=majority&appName=MarkedDown";
 
@@ -54,7 +64,9 @@ async def create_upload_file(file: UploadFile = File(...)):
 
     cv2.imwrite('test_wm.png', bgr_encoded)
 
-    return FileResponse('test_wm.png')
+    response = FileResponse('test_wm.png')
+    response.headers["uuid"] = wm
+    return response
 
 
 @app.post("/decodefile/")
