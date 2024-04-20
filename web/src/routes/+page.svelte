@@ -2,7 +2,8 @@
 	import { PUBLIC_API_ENDPOINT_PY } from '$env/static/public';
 	import exifr from 'exifr'; // to use ES Modules
 
-	let imageUrl: string | null = 'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio29_6yqmbwu4P.jpg'; //null;
+	let imageUrl: string | null =
+		'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio29_6yqmbwu4P.jpg'; //null;
 	interface ImageMetadata {
 		make?: string;
 		model?: string;
@@ -15,6 +16,9 @@
 	}
 
 	let imageMetadata: ImageMetadata = {};
+
+  let title: string = '';
+  let description: string = '';
 
 	let exifData = {};
 
@@ -135,7 +139,7 @@
 <section class="flex min-h-screen items-stretch justify-center">
 	<div class="mx-auto w-full max-w-5xl p-4">
 		<h2 class="mb-2 text-left text-2xl font-bold">Upload and Input</h2>
-    <div class="mb-8 text-left">Upload an image and get the MarkedDown version</div>
+		<div class="mb-8 text-left">Upload an image and get the MarkedDown version</div>
 		<div class="flex flex-wrap items-stretch justify-between">
 			<div class="mb-4 w-full pr-4 lg:mb-0 lg:w-1/2">
 				<div class="flex max-h-[500px]">
@@ -204,11 +208,9 @@
 				</div>
 			</div>
 			{#if imageUrl}
-				<div
-					class="bg-base-200 max-h-[500px] w-full overflow-auto rounded-lg p-5 px-4  lg:w-1/2"
-				>
-                    <h3 class="text-lg font-semibold">Image EXIF Data</h3>
-                    <h3 class="  mb-4">Image metadata (reference only)</h3>
+				<div class="bg-base-200 max-h-[500px] w-full overflow-auto rounded-lg p-5 px-4 lg:w-1/2">
+					<h3 class="text-lg font-semibold">Image EXIF Data</h3>
+					<h3 class="  mb-4">Image metadata (reference only)</h3>
 					<pre class="font-mono" style="max-height: 100%; overflow-y: scroll;">{JSON.stringify(
 							exifData,
 							null,
@@ -217,14 +219,27 @@
 				</div>
 			{/if}
 		</div>
-    <div class="mt-5">
-      <div class="mb-2 font-bold">Title</div>
-      <input type="text" placeholder="Type here" class="mb-4 input input-bordered w-full" />
-      <div class="mb-2 font-bold">Description</div>
-      <input type="text" placeholder="Type here" class="mb-4 input input-bordered w-full" />
-      <div class="mb-2 font-bold">Title</div>
-      <input type="text" placeholder="Type here" class="mb-4 input input-bordered w-full" />
-    </div>
+		<div class="mt-5">
+			<div class="mb-2 font-bold">Title</div>
+			<div class="join w-full">
+				<input
+					type="text"
+          bind:value={title}
+					placeholder="Image title"
+					class="join-item input input-bordered mb-4 w-full"
+				/>
+				<button class="join-item btn btn-secondary">Generate</button>
+			</div>
+			<div class="mb-2 font-bold">Description</div>
+			<div class="join w-full">
+				<input
+					type="text"
+          bind:value={description}
+					placeholder="Image description"
+					class="join-item input input-bordered mb-4 w-full"
+				/>
+				<button class="join-item btn btn-secondary">Generate</button>
+			</div>
+		</div>
 	</div>
-  
 </section>
