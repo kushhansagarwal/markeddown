@@ -220,7 +220,7 @@
     <div class="mt-5">
       <div class="mb-2 font-bold">Title</div>
       <input type="text" placeholder="Type here" class="mb-4 input input-bordered w-full" />
-      <div class="mb-2 font-bold">Title</div>
+      <div class="mb-2 font-bold">Description</div>
       <input type="text" placeholder="Type here" class="mb-4 input input-bordered w-full" />
       <div class="mb-2 font-bold">Title</div>
       <input type="text" placeholder="Type here" class="mb-4 input input-bordered w-full" />
