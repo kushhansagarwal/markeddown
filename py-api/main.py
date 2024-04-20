@@ -45,27 +45,18 @@ async def create_upload_file(file: UploadFile = File(...)):
     encoder.set_watermark('uuid', wm)
     bgr_encoded = encoder.encode(bgr, 'dwtDctSvd')
 
-    img = Image.open('test.png')
-    exif_dict = piexif.load(img.info['exif'])
-    
-    if '0th' in exif_dict:
-        exif_dict_str_keys = {piexif.ImageIFD.Make: exif_dict['0th'][271],
-                              piexif.ImageIFD.Model: exif_dict['0th'][272],
-                              piexif.ImageIFD.DateTime: exif_dict['0th'][306]}
-    else:
-        exif_dict_str_keys = {}
+    exif_dict = piexif.load('test.png')
 
-    client.markeddown.images.insert_one({
+    mongo_upload = client.markeddown.images.insert_one({
         "uuid": wm,
-        "make": exif_dict_str_keys[piexif.ImageIFD.Make].decode('utf-8'),
-        "model": exif_dict_str_keys[piexif.ImageIFD.Model].decode('utf-8'),
-        "datetime": exif_dict_str_keys[piexif.ImageIFD.DateTime].decode('utf-8'),
     })
 
     cv2.imwrite('test_wm.png', bgr_encoded)
 
     response = FileResponse('test_wm.png')
     response.headers["uuid"] = wm
+    response.headers["objectID"] = str(mongo_upload.inserted_id)
+    response.headers["Access-Control-Expose-Headers"] = "uuid, objectID"
     return response
 
 
