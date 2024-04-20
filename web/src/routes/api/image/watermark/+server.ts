@@ -1,6 +1,8 @@
 import type { RequestHandler } from './$types';
 import dw from 'digital-watermarking';
 import Exif from 'exifr';
+import clientPromise from '$lib/mongodb';
+
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
@@ -9,14 +11,28 @@ export const POST: RequestHandler = async ({ request }) => {
 		const fileBuffer = Buffer.from((await file.arrayBuffer()) as ArrayBuffer);
 		const metadata = await Exif.parse(fileBuffer);
 
+		if (metadata && metadata.Image && metadata.Image.ISO) {
+			metadata.Image.ISO = 800;
+		}
+
 		if (!file || typeof file === 'string') {
 			return new Response('File not found or invalid file type.', { status: 400 });
 		}
+
+		const db = await clientPromise;
+		const dbResponse = await db.db('markeddown').collection('images').insertOne({
+			filename: file.name,
+			metadata: metadata
+		});
+		const objectId = dbResponse.insertedId;
 		// Process the file here (e.g., apply watermark)
+		const watermarkedBuffer = await dw.transformImageBufferWithText(fileBuffer, 'MarkedDown', 10);
+
 		// For now, just return a success response
 		return new Response(
 			JSON.stringify({
-				metadata
+				metadata,
+                watermarkedBuffer
 			}),
 			{
 				status: 200,
@@ -26,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 		);
 	} catch (error) {
-        console.error(error);
+		console.error(error);
 		return new Response(JSON.stringify({ error: error }), {
 			status: 500,
 			headers: {

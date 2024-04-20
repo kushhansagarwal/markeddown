@@ -40,6 +40,8 @@
 		"digital-watermarking": "^1.1.15",
 		"exif": "^0.6.0",
 		"exif-reader": "^2.0.1",
-		"exifr": "^7.1.3"
+		"exifr": "^7.1.3",
+		"jimp": "^0.9.8",
+		"mongodb": "^6.5.0"
 	}
 }
