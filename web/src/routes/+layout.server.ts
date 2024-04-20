@@ -10,6 +10,7 @@ export interface ImageDocument {
     description: string;
     title: string;
     embedding: number[];
+    similarity?: number;
 }
 
 let images: ImageDocument[] = [];

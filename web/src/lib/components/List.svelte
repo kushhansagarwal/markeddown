@@ -8,17 +8,35 @@
 </script>
 
 <div class="mx-auto w-full max-w-5xl p-4">
-	<h2 class="mb-2 text-left text-2xl font-bold">View Images</h2>
+	<h2 class="mb-2 text-left text-2xl font-bold">View your photos</h2>
+	<div class=" mb-5 text-left">
+		These are your photos. The following tags indicate the types of protection your photos have
+	</div>
+	<div class="">
+		<div class="mb-2">
+			<div class="badge badge-primary badge-outline">EXIF</div>
+			 means it is protected by EXIF data
+		</div>
+		<div class="mb-2">
+			<div class="badge badge-accent badge-outline">Gemini</div>
+			 means it is protected by Gemini
+		</div>
+		<div class="mb-2">
+			<div class="badge badge-secondary badge-outline">Watermark</div>
+			 means it is protected by a watermark
+		</div>
+	</div>
+	<div class="divider"></div>
 	<div class="grid gap-4">
 		{#each images as image}
 			<div
-				class="bg-base-200 flex flex-col items-center justify-center gap-4 rounded-md p-0 md:flex-row"
+				class=" flex flex-col items-center justify-center gap-4 rounded-md p-0 md:flex-row"
 			>
 				<div class="w-full md:w-1/2">
 					<img
 						src={`https://ik.imagekit.io/wy49ay1bjy4c/markeddown/${image._id}?tr=w-1000`}
 						alt={image.title}
-						class=" rounded-l-md object-cover shadow-lg"
+						class=" rounded-md object-cover shadow-lg"
 					/>
 				</div>
 				<div class=" w-full md:w-1/2">
@@ -36,8 +54,14 @@
 					<div class="mb-5 px-5 text-justify text-sm">
 						{image.description}
 					</div>
+					<a
+						href={`https://ik.imagekit.io/wy49ay1bjy4c/markeddown/${image._id}?tr=w-1000`}
+						download={image.title}
+						class="btn btn-primary mb-5 mx-5">Download</a
+					>
 				</div>
 			</div>
+			<div class="divider"></div>
 		{/each}
 	</div>
 </div>

@@ -99,8 +99,9 @@
 </script>
 
 <div class="mx-auto w-full max-w-5xl p-4">
-	<h2 class="mb-2 text-left text-2xl font-bold">Upload and Input</h2>
-	<div class="mb-8 text-left">Upload photo and get the MarkedDown version</div>
+	<h2 class="mb-2 text-left text-2xl font-bold">Markdown a photo</h2>
+	<div class=" text-left">Upload photo and get the MarkedDown version</div>
+	<div class="divider"></div>
 	<div class="flex flex-wrap items-stretch justify-between">
 		<div class="mb-4 w-full pr-4 lg:mb-0 lg:w-1/2">
 			<div class="flex max-h-[500px]">
@@ -283,9 +284,9 @@
 			<span class="label-text"
 				>By hitting Download, you are downloading a copy of the photo with your secure MarkedDown
 				information stored in it. Download our Chrome Extension to scan websites you visit which
-				might have this photo copied on them. Alternatively, go to the "Your photos" tab to check your
-				photos. Remember, if an photo does not have your watermark, you would not be able to see any
-				information.</span
+				might have this photo copied on them. Alternatively, go to the "Your photos" tab to check
+				your photos. Remember, if an photo does not have your watermark, you would not be able to
+				see any information.</span
 			>
 		</label>
 		<button
@@ -294,15 +295,28 @@
 				if (imageBlob) formData.append('file', imageBlob);
 
 				formData.append('exif', JSON.stringify(exifData));
-                formData.append('title', title);
-                formData.append('description', description);
-                formData.append('objectId', objectId);
-                formData.append('userId', data.user.email);
+				formData.append('title', title);
+				formData.append('description', description);
+				formData.append('objectId', objectId);
+				formData.append('userId', data.user.email);
 
 				const response = await fetch(`/api/image/save`, {
 					method: 'POST',
 					body: formData
 				});
+                
+				if (imageBlob) {
+					const url = window.URL.createObjectURL(imageBlob);
+					const a = document.createElement('a');
+					a.href = url;
+					a.download = title || 'download';
+					document.body.appendChild(a);
+					a.click();
+					window.URL.revokeObjectURL(url);
+					document.body.removeChild(a);
+				} else {
+					console.error('No image to download');
+				}
 			}}
 			disabled={!agreed}
 			class="btn btn-primary"

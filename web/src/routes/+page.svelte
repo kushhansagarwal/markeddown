@@ -1,10 +1,19 @@
-<script>
+<script lang="ts">
 	import Upload from '../lib/components/Upload.svelte';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import List from '$lib/components/List.svelte';
+	import Check from '$lib/components/Check.svelte';
 
 	export let data;
+
+	enum section {
+		upload = 'MarkDown photo',
+		list = 'Your photos',
+		photo = 'photo'
+	}
+
+	let currentSection = section.upload;
 
 	onMount(() => {
 		if (!data.isAuthenticated) {
@@ -12,6 +21,7 @@
 		}
 	});
 </script>
+
 
 <div class="navbar bg-base-100 p-3">
 	<div class="flex-1">
@@ -34,37 +44,71 @@
 	</div>
 </div>
 
-<section class="flex items-stretch">
-	<div role="tablist" class="tabs tabs-bordered mx-auto">
-		<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="MarkDown photo" />
-		<div role="tabpanel" class="tab-content p-10">
+<div class="max-w-5xl mx-auto">
+  <div role="tablist" class="tabs tabs-bordered mb-5">
+    <input
+      on:click={() => (currentSection = section.upload)}
+      type="radio"
+      checked
+      name="my_tabs_1"
+      role="tab"
+      class="tab text-md"
+      aria-label="MarkDown photo"
+    />
+  
+    <input
+      on:click={() => (currentSection = section.list)}
+      type="radio"
+      name="my_tabs_1"
+      role="tab"
+      class="tab"
+      aria-label="Your photos"
+    />
+  
+    <input
+      on:click={() => (currentSection = section.photo)}
+      type="radio"
+      name="my_tabs_1"
+      role="tab"
+      class="tab"
+      aria-label="Check photo"
+    />
+  </div>
+  
+</div>
+<section class="flex">
+	{#if currentSection === section.upload}
+		<div class="mx-auto">
 			<div class="mx-auto">
-				<div class="mx-auto">
-					{#if data.user}
-						<Upload {data} />
-					{:else}
-						<!-- Optionally, provide feedback or alternative content when user is null -->
-						<p>Please log in to upload files.</p>
-					{/if}
-				</div>
+				{#if data.user}
+					<Upload {data} />
+				{:else}
+					<!-- Optionally, provide feedback or alternative content when user is null -->
+					<p>Please log in to upload files.</p>
+				{/if}
 			</div>
 		</div>
-
-		<input type="radio" name="my_tabs_1" role="tab" class="tab" checked aria-label="Your photos" />
-		<div role="tabpanel" class="tab-content p-10">
+	{:else if currentSection === section.list}
+		<div class="mx-auto">
 			<div class="mx-auto">
-				<div class="mx-auto">
-					{#if data.images}
-						<List images={data.images} />
-					{:else}
-						<!-- Optionally, provide feedback or alternative content when user is null -->
-						<p>Please log in to upload files.</p>
-					{/if}
-				</div>
+				{#if data.images}
+					<List images={data.images} />
+				{:else}
+					<!-- Optionally, provide feedback or alternative content when user is null -->
+					<p>Please log in to upload files.</p>
+				{/if}
 			</div>
 		</div>
-
-		<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="Your photo" />
-		<div role="tabpanel" class="tab-content p-10">Tab content 3</div>
-	</div>
+	{:else if currentSection === section.photo}
+  <div class="mx-auto">
+    <div class="mx-auto">
+      {#if data.user}
+        <Check {data} />
+      {:else}
+        <!-- Optionally, provide feedback or alternative content when user is null -->
+        <p>Please log in to upload files.</p>
+      {/if}
+    </div>
+  </div>
+	{/if}
 </section>

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from imwatermark import WatermarkEncoder, WatermarkDecoder
@@ -12,7 +12,7 @@ from pathlib import Path
 import uuid
 import piexif
 from PIL import Image
-import json
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -25,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-uri = "mongodb+srv://markeddown:6i0w9fFQqDHrEYsR@markeddown.fdnkd6g.mongodb.net/?retryWrites=true&w=majority&appName=MarkedDown";
+uri = "mongodb+srv://markeddown:6i0w9fFQqDHrEYsR@markeddown-atlas.vzwdz85.mongodb.net/?retryWrites=true&w=majority&appName=MarkedDown-Atlas";
 
 client = MongoClient(uri, server_api=ServerApi('1'))
 # Send a ping to confirm a successful connection
@@ -46,8 +46,6 @@ async def create_upload_file(file: UploadFile = File(...)):
     encoder = WatermarkEncoder()
     encoder.set_watermark('uuid', wm)
     bgr_encoded = encoder.encode(bgr, 'dwtDctSvd')
-
-    exif_dict = piexif.load('test.png')
 
     mongo_upload = client.markeddown.images.insert_one({
         "uuid": wm,
@@ -72,18 +70,28 @@ async def create_upload_file(file: UploadFile = File(...)):
 
 
 @app.post("/decodefile/")
-async def decode_file(file: UploadFile = File(...)):
-    with open('decoded.png', 'wb') as buffer:
-        shutil.copyfileobj(file.file, buffer)
+async def decode_file(file: UploadFile = File(...), userId: str = Form(...)):
+    try:
+        with open('decoded.png', 'wb') as buffer:
+            shutil.copyfileobj(file.file, buffer)
 
-    bgr = cv2.imread('decoded.png')
+        bgr = cv2.imread('decoded.png')
 
-    decoder = WatermarkDecoder('uuid', 128)
-    watermark = decoder.decode(bgr, 'dwtDctSvd')
-    print(watermark)
+        decoder = WatermarkDecoder('uuid', 128)
+        watermark = decoder.decode(bgr, 'dwtDctSvd')
+        print(watermark)
 
-
-    return {"watermark": watermark}
+        if watermark is None:
+            return JSONResponse(status_code=400, content={"error": "No watermark found"})
+        else:
+            match = client.markeddown.images.find_one({"uuid": watermark, "userId": userId})
+            if match:
+                return JSONResponse(status_code=200, content={"match": "true", "ObjectId": str(match["_id"])})
+            else:
+                return JSONResponse(status_code=400, content={"error": "No match found"})
+    except Exception as e:
+        print(e)
+        return JSONResponse(status_code=500, content={"error": "An error occurred during the decoding process"})
 
 if __name__ == '__main__':
     import uvicorn

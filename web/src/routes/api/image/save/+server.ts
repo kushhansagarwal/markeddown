@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			{
 				$set: {
 					filename: imageFile.name,
-					embedding: embeddding,
+					embedding: embeddding.embedding.values,
 					title,
 					description,
 					userId,
