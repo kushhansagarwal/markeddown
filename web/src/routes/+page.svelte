@@ -50,7 +50,7 @@
 			</div>
 		</div>
 
-		<input type="radio" name="my_tabs_1" role="tab" class="tab" checked aria-label="Check photo" />
+		<input type="radio" name="my_tabs_1" role="tab" class="tab" checked aria-label="Your photos" />
 		<div role="tabpanel" class="tab-content p-10">
 			<div class="mx-auto">
 				<div class="mx-auto">

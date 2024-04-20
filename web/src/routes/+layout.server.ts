@@ -9,6 +9,7 @@ export interface ImageDocument {
     uuid: string;
     description: string;
     title: string;
+    embedding: number[];
 }
 
 let images: ImageDocument[] = [];
@@ -27,7 +28,7 @@ export async function load({ request }: RequestEvent) {
 	if (isAuthenticated) {
 		// Need to implement, e.g: call an api, etc...
 		user = await kindeAuthClient.getUser(request as unknown as SessionManager);
-		images = await db.db('markeddown').collection<ImageDocument>('images').find({ userId: user.email }, { projection: { _id: 1, uuid: 1, description: 1, title: 1 } }).toArray();
+		images = await db.db('markeddown').collection<ImageDocument>('images').find({ userId: user.email }, { projection: { _id: 1, uuid: 1, description: 1, title: 1, embedding: 1 } }).toArray();
         images = images.map(image => ({
             ...image,
             _id: image._id.toString()

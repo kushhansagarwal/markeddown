@@ -100,7 +100,7 @@
 
 <div class="mx-auto w-full max-w-5xl p-4">
 	<h2 class="mb-2 text-left text-2xl font-bold">Upload and Input</h2>
-	<div class="mb-8 text-left">Upload an image and get the MarkedDown version</div>
+	<div class="mb-8 text-left">Upload photo and get the MarkedDown version</div>
 	<div class="flex flex-wrap items-stretch justify-between">
 		<div class="mb-4 w-full pr-4 lg:mb-0 lg:w-1/2">
 			<div class="flex max-h-[500px]">
@@ -155,7 +155,7 @@
 							<div class="card-body">
 								<h2 class="card-title">Succesfully MarkedDown!</h2>
 								<p>
-									Download this image and upload it on the web. Your image has the unique ID <span
+									Download this photo and upload it on the web! Your photo has the unique ID <span
 										class="bg-base-200 rounded-md p-1 font-mono">{uuid}</span
 									>
 								</p>
@@ -169,9 +169,9 @@
 			<div
 				class="bg-base-200 h-full max-h-[500px] w-full overflow-auto rounded-lg p-5 px-4 lg:w-1/2"
 			>
-				<h3 class="text-lg font-semibold">Image EXIF Data</h3>
+				<!-- <h3 class="text-lg font-semibold">EXIF Data</h3> -->
 				{#if inputDisabled}
-					Image metadata is only available after uploading the image
+					The metadata is only available after uploading the photo
 				{:else}
 					<pre class="font-mono" style="max-height: 100%; overflow-y: scroll;">{JSON.stringify(
 							exifData,
@@ -281,10 +281,10 @@
 				class="checkbox checkbox-primary mr-3"
 			/>
 			<span class="label-text"
-				>By hitting Download, you are downloading a copy of the image with your secure MarkedDown
+				>By hitting Download, you are downloading a copy of the photo with your secure MarkedDown
 				information stored in it. Download our Chrome Extension to scan websites you visit which
-				might have this image copied on them. Alternatively, go to the your images tab to check your
-				images. Remember, if an image does not have your watermark, you would not be able to see any
+				might have this photo copied on them. Alternatively, go to the "Your photos" tab to check your
+				photos. Remember, if an photo does not have your watermark, you would not be able to see any
 				information.</span
 			>
 		</label>
