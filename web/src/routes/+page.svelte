@@ -22,12 +22,16 @@
 	let title: string = '';
 	let description: string = '';
 
+	let agreed: boolean = false;
+
 	let titleGenerationState = 'idle';
 	let descriptionGenerationState = 'idle';
 
 	let exifData = {};
 
 	let uuid: string = '';
+	let inputDisabled: boolean = true;
+	$: inputDisabled = !(uploadState === 'success');
 
 	enum state {
 		idle = 'idle',
@@ -88,6 +92,7 @@
 <section class="flex min-h-screen items-stretch justify-center">
 	<div class="mx-auto w-full max-w-5xl p-4">
 		<h2 class="mb-2 text-left text-2xl font-bold">Upload and Input</h2>
+    <a href="/api/auth/login">Sign in</a>
 		<div class="mb-8 text-left">Upload an image and get the MarkedDown version</div>
 		<div class="flex flex-wrap items-stretch justify-between">
 			<div class="mb-4 w-full pr-4 lg:mb-0 lg:w-1/2">
@@ -147,9 +152,6 @@
 											class="bg-base-200 rounded-md p-1 font-mono">{uuid}</span
 										>
 									</p>
-									<div class="card-actions justify-end">
-										<a href={imageUrl} download class="btn btn-primary">Download</a>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -157,14 +159,17 @@
 				</div>
 			</div>
 			{#if imageUrl}
-				<div class="bg-base-200 max-h-[500px] w-full overflow-auto rounded-lg p-5 px-4 lg:w-1/2">
+				<div class="bg-base-200 max-h-[500px] h-full w-full overflow-auto rounded-lg p-5 px-4 lg:w-1/2">
 					<h3 class="text-lg font-semibold">Image EXIF Data</h3>
-					<h3 class="  mb-4">Image metadata (reference only)</h3>
-					<pre class="font-mono" style="max-height: 100%; overflow-y: scroll;">{JSON.stringify(
-							exifData,
-							null,
-							2
-						)}</pre>
+					{#if inputDisabled}
+						Image metadata is only available after uploading the image
+					{:else}
+						<pre class="font-mono" style="max-height: 100%; overflow-y: scroll;">{JSON.stringify(
+								exifData,
+								null,
+								2
+							)}</pre>
+					{/if}
 				</div>
 			{/if}
 		</div>
@@ -188,7 +193,7 @@
 								body: formData
 							});
 
-              titleGenerationState = 'success';
+							titleGenerationState = 'success';
 
 							if (response.ok) {
 								let responseJson = await response.json();
@@ -208,6 +213,7 @@
 			</div>
 			<input
 				type="text"
+				disabled={inputDisabled}
 				bind:value={title}
 				placeholder="Image title"
 				class="join-item input input-bordered mb-4 w-full text-sm"
@@ -232,7 +238,7 @@
 								body: formData
 							});
 
-              descriptionGenerationState = 'success';
+							descriptionGenerationState = 'success';
 
 							if (response.ok) {
 								let responseJson = await response.json();
@@ -253,9 +259,27 @@
 
 			<textarea
 				bind:value={description}
+				disabled={inputDisabled}
 				class="textarea textarea-bordered mb-4 h-48 w-full"
 				placeholder="Image description"
 			></textarea>
+
+			<label class="label mb-3 cursor-pointer text-sm font-light">
+				<input
+					disabled={inputDisabled || title == '' || description == ''}
+					bind:value={agreed}
+					type="checkbox"
+					class="checkbox checkbox-primary mr-3"
+				/>
+				<span class="label-text"
+					>By hitting Download, you are downloading a copy of the image with your secure MarkedDown
+					information stored in it. Download our Chrome Extension to scan websites you visit which
+					might have this image copied on them. Alternatively, go to the your images tab to check
+					your images. Remember, if an image does not have your watermark, you would not be able to
+					see any information.</span
+				>
+			</label>
+			<button disabled={!agreed} class="btn btn-primary"> Download MarkedDown Image </button>
 		</div>
 	</div>
 </section>
