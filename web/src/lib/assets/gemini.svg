@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 127 127">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-2 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-2, .cls-3 {
+        stroke-width: 0px;
+      }
+
+      .cls-3 {
+        clip-rule: evenodd;
+        fill: none;
+      }
+    </style>
+    <clipPath id="clippath">
+      <path class="cls-3" d="M58.4,102.2c3.4,7.7,5.1,16,5.1,24.8,0-8.8,1.6-17,4.9-24.8,3.4-7.7,7.9-14.4,13.7-20.2,5.7-5.7,12.4-10.2,20.2-13.5,7.7-3.4,16-5.1,24.8-5.1-8.8,0-17-1.6-24.8-4.9-7.7-3.4-14.4-7.9-20.2-13.7-5.7-5.7-10.3-12.4-13.7-20.2-3.3-7.7-4.9-16-4.9-24.8,0,8.8-1.7,17-5.1,24.8-3.3,7.7-7.8,14.4-13.5,20.2-5.7,5.7-12.4,10.3-20.2,13.7-7.7,3.3-16,4.9-24.8,4.9,8.8,0,17,1.7,24.8,5.1,7.7,3.3,14.4,7.8,20.2,13.5,5.7,5.7,10.2,12.4,13.5,20.2Z"/>
+    </clipPath>
+    <linearGradient id="linear-gradient" x1="-759.4" y1="195" x2="263.4" y2="443.2" gradientTransform="translate(0 128) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#439ddf"/>
+      <stop offset=".5" stop-color="#4f87ed"/>
+      <stop offset=".8" stop-color="#9476c5"/>
+      <stop offset=".9" stop-color="#bc688e"/>
+      <stop offset="1" stop-color="#d6645d"/>
+    </linearGradient>
+  </defs>
+  <g class="cls-1">
+    <rect class="cls-2" x="-914.7" y="-1129.6" width="2063.8" height="1699.7"/>
+  </g>
+</svg>
