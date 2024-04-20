@@ -4,6 +4,7 @@
 
 	let imageUrl: string | null =
 		'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio29_6yqmbwu4P.jpg'; //null;
+	let imageBlob: Blob | null = null;
 	interface ImageMetadata {
 		make?: string;
 		model?: string;
@@ -17,8 +18,9 @@
 
 	let imageMetadata: ImageMetadata = {};
 
-  let title: string = '';
-  let description: string = '';
+	let title: string = '';
+	let description: string =
+		'The warm California sun cast long shadows across the immaculate lawns of the university campus. As I strolled through, my Sony Alpha 7C gripped firmly in hand, I couldnt help but notice a young man, sharply dressed in a suit, sitting amidst the vibrant greenery. The juxtaposition of his formal attire against the casual backdrop of the campus grounds was intriguing. He was lost in thought, gazing into the distance, seemingly oblivious to the world around him. The 24mm F1.4 Sigma Art lens allowed me to capture a wide perspective, incorporating the iconic university buildings into the frame, while still maintaining a shallow depth of field, isolating the subject from the background. With a swift click, I froze this moment in time - a snapshot of contemplation amidst the hustle and bustle of university life. The daylight setting, coupled with the fast f/1.4 aperture and 1/500s shutter speed, ensured a crisp image with beautiful bokeh, further emphasizing the subject.  This image, taken on April 7th, 2024, serves as a reminder of the quiet moments of reflection that can be found even in the most unexpected places.';
 
 	let exifData = {};
 
@@ -30,7 +32,7 @@
 		success = 'success'
 	}
 
-	let uploadState = state.success;
+	let uploadState = state.idle;
 
 	type ExifData = {
 		make?: string;
@@ -66,6 +68,7 @@
 
 		if (response.ok) {
 			const data = await response.blob();
+			imageBlob = data;
 			imageUrl = URL.createObjectURL(data);
 		} else {
 			console.error('Failed to upload image');
@@ -76,63 +79,6 @@
 <div class="navbar bg-base-100 p-3">
 	<div class="flex-1">
 		<a class="btn btn-ghost text-xl">Marked<span class="font-bold">Down</span></a>
-	</div>
-	<div class="flex-none">
-		<div class="dropdown dropdown-end">
-			<div tabindex="0" role="button" class="btn btn-ghost btn-circle">
-				<div class="indicator">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						><path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-						/></svg
-					>
-					<span class="badge badge-sm indicator-item">8</span>
-				</div>
-			</div>
-			<div
-				tabindex="0"
-				class="card card-compact dropdown-content bg-base-100 z-[1] mt-3 w-52 shadow"
-			>
-				<div class="card-body">
-					<span class="text-lg font-bold">8 Items</span>
-					<span class="text-info">Subtotal: $999</span>
-					<div class="card-actions">
-						<button class="btn btn-primary btn-block">View cart</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="dropdown dropdown-end">
-			<div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-				<div class="w-10 rounded-full">
-					<img
-						alt="Tailwind CSS Navbar component"
-						src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-					/>
-				</div>
-			</div>
-			<ul
-				tabindex="0"
-				class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-			>
-				<li>
-					<a class="justify-between">
-						Profile
-						<span class="badge">New</span>
-					</a>
-				</li>
-				<li><a>Settings</a></li>
-				<li><a>Logout</a></li>
-			</ul>
-		</div>
 	</div>
 </div>
 
@@ -224,22 +170,66 @@
 			<div class="join w-full">
 				<input
 					type="text"
-          bind:value={title}
+					bind:value={title}
 					placeholder="Image title"
-					class="join-item input input-bordered mb-4 w-full"
+					class="join-item input input-bordered mb-4 w-full text-sm"
 				/>
-				<button class="join-item btn btn-secondary">Generate</button>
+				<button
+					disabled={imageBlob === null}
+					on:click={async () => {
+						const formData = new FormData();
+						if (imageBlob) formData.append('file', imageBlob);
+
+						formData.append('exif', JSON.stringify(exifData));
+						formData.append('field', 'title');
+
+						const response = await fetch(`/api/image/generate`, {
+							method: 'POST',
+							body: formData
+						});
+
+						if (response.ok) {
+							let responseJson = await response.json();
+							console.log(responseJson);
+							title = responseJson.response.candidates[0].content.parts[0].text;
+						} else {
+							console.error('Failed to generate image');
+						}
+					}}
+					class="join-item btn btn-secondary">Generate</button
+				>
 			</div>
 			<div class="mb-2 font-bold">Description</div>
-			<div class="join w-full">
-				<input
-					type="text"
-          bind:value={description}
-					placeholder="Image description"
-					class="join-item input input-bordered mb-4 w-full"
-				/>
-				<button class="join-item btn btn-secondary">Generate</button>
-			</div>
+
+			<textarea
+				bind:value={description}
+				class="textarea textarea-bordered mb-4 w-full"
+				placeholder="Image description"
+			></textarea>
+			<button
+				disabled={imageBlob === null}
+				on:click={async () => {
+					const formData = new FormData();
+					if (imageBlob) formData.append('file', imageBlob);
+
+					formData.append('exif', JSON.stringify(exifData));
+					formData.append('field', 'description');
+
+					const response = await fetch(`/api/image/generate`, {
+						method: 'POST',
+						body: formData
+					});
+
+					if (response.ok) {
+						let responseJson = await response.json();
+						console.log(responseJson);
+						description = responseJson.response.candidates[0].content.parts[0].text;
+					} else {
+						console.error('Failed to generate image');
+					}
+				}}
+				class="join-item btn btn-secondary">Generate</button
+			>
 		</div>
 	</div>
 </section>
