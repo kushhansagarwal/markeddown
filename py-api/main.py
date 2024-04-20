@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from imwatermark import WatermarkEncoder, WatermarkDecoder
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+import boto3
+from botocore.exceptions import ClientError
 import cv2
 import shutil
 from pathlib import Path
@@ -53,10 +55,19 @@ async def create_upload_file(file: UploadFile = File(...)):
 
     cv2.imwrite('test_wm.png', bgr_encoded)
 
+    mongoId = str(mongo_upload.inserted_id)
+
+    s3 = boto3.client('s3', aws_access_key_id='AKIA4QTK6AMEKL2JO62W', aws_secret_access_key='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')
+    try:
+        s3.upload_file('test_wm.png', 'markeddown', mongoId)
+    except ClientError as e:
+        print(e)
+
     response = FileResponse('test_wm.png')
     response.headers["uuid"] = wm
-    response.headers["objectID"] = str(mongo_upload.inserted_id)
+    response.headers["objectID"] = mongoId
     response.headers["Access-Control-Expose-Headers"] = "uuid, objectID"
+    print(mongoId)
     return response
 
 

@@ -3,7 +3,16 @@
 	import exifr from 'exifr'; // to use ES Modules
 	import gemini from '$lib/assets/gemini.svg';
 
-    export let data;
+	export let data: {
+		isAuthenticated: boolean;
+		user: {
+			family_name: string;
+			given_name: string;
+			picture: string | null;
+			email: string;
+			id: string;
+		};
+	};
 	console.log(data);
 
 	let imageUrl: string | null =
@@ -33,6 +42,7 @@
 	let exifData = {};
 
 	let uuid: string = '';
+	let objectId: string = '';
 	let inputDisabled: boolean = true;
 	$: inputDisabled = !(uploadState === 'success');
 
@@ -70,8 +80,10 @@
 		});
 
 		const uuidHeader = response.headers.get('Uuid');
-		console.log(`Uuid: ${uuidHeader}`);
 		uuid = uuidHeader || 'unknown';
+
+		const objectIdHeader = response.headers.get('ObjectId');
+		objectId = objectIdHeader || 'unknown';
 
 		uploadState = state.success;
 		console.log(response.headers);
@@ -276,6 +288,26 @@
 				information.</span
 			>
 		</label>
-		<button disabled={!agreed} class="btn btn-primary"> Download MarkedDown Image </button>
+		<button
+			on:click={async () => {
+				const formData = new FormData();
+				if (imageBlob) formData.append('file', imageBlob);
+
+				formData.append('exif', JSON.stringify(exifData));
+                formData.append('title', title);
+                formData.append('description', description);
+                formData.append('objectId', objectId);
+                formData.append('userId', data.user.email);
+
+				const response = await fetch(`/api/image/save`, {
+					method: 'POST',
+					body: formData
+				});
+			}}
+			disabled={!agreed}
+			class="btn btn-primary"
+		>
+			Download MarkedDown Image
+		</button>
 	</div>
 </div>

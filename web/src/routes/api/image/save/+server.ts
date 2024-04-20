@@ -1,27 +1,39 @@
 import type { RequestHandler } from './$types';
 import { genAI } from '$lib/genai';
+import clientPromise from '$lib/mongodb';
 import sharp from 'sharp';
+import { ObjectId } from 'mongodb';
+
 const model = genAI.getGenerativeModel({
-	model: 'gemini-1.5-pro-latest'
+	model: 'gemini-1.5-pro-latest',
+	generationConfig: {
+		temperature: 0
+	}
 });
 
 const embeddingModel = genAI.getGenerativeModel({
 	model: 'embedding-001',
 	generationConfig: {
-		temperature: 0,
-		topP: 0.9,
-		topK: 0
+		temperature: 0
 	}
 });
+
+const db = await clientPromise;
 
 export const POST: RequestHandler = async ({ request }) => {
 	const formData = await request.formData();
 	const input = formData.get('input') as string;
 	const imageFile = formData.get('file') as File;
+	const title = formData.get('title') as string;
+	const description = formData.get('description') as string;
+	const userId = formData.get('userId') as string;
+	const objectId = formData.get('objectId') as string;
+	const exifData = formData.get('exif') as string;
+	const exifJson = await JSON.parse(exifData);
 	const imageBuffer = await imageFile?.arrayBuffer();
 	const resizedImageBuffer = await sharp(imageBuffer).resize(500).toBuffer();
 
-	const description = await model.generateContent([
+	const genDescription = await model.generateContent([
 		'Describe this image in detail. Talk about the orientation, type of things in the image and much more. Be as descriptive as possible.',
 		{
 			inlineData: {
@@ -31,12 +43,35 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 	]);
 
-	const response = await embeddingModel.embedContent(input);
+	const descriptionText = genDescription.response.candidates?.[0]?.content.parts[0].text;
+	if (!descriptionText) {
+		return new Response(JSON.stringify({ error: 'Failed to generate description.' }), {
+			status: 400
+		});
+	}
+
+	const embeddding = await embeddingModel.embedContent(descriptionText);
+
+	db.db('markeddown')
+		.collection('images')
+		.updateOne(
+			{ _id: new ObjectId(objectId) },
+			{
+				$set: {
+					filename: imageFile.name,
+					embedding: embeddding,
+					title,
+					description,
+					userId,
+					exifJson
+				}
+			},
+			{ upsert: true }
+		);
 
 	return new Response(
 		JSON.stringify({
-			// response,
-			description
+			embeddding
 		})
 	);
 	// const imageFile = formData.get('file') as File;

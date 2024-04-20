@@ -2,12 +2,13 @@
 	import Upload from '../lib/components/Upload.svelte';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import List from '$lib/components/List.svelte';
 
 	export let data;
 
 	onMount(() => {
-		if (!data.user) {
-			goto('/api/auth/login'); 
+		if (!data.isAuthenticated) {
+			goto('/api/auth/login');
 		}
 	});
 </script>
@@ -35,15 +36,33 @@
 
 <section class="flex items-stretch">
 	<div role="tablist" class="tabs tabs-bordered mx-auto">
-		<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="MarkDown photo" checked />
+		<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="MarkDown photo" />
 		<div role="tabpanel" class="tab-content p-10">
 			<div class="mx-auto">
-				<Upload {data} />
+				<div class="mx-auto">
+					{#if data.user}
+						<Upload {data} />
+					{:else}
+						<!-- Optionally, provide feedback or alternative content when user is null -->
+						<p>Please log in to upload files.</p>
+					{/if}
+				</div>
 			</div>
 		</div>
 
-		<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="Check photo" />
-		<div role="tabpanel" class="tab-content p-10">Tab content 2</div>
+		<input type="radio" name="my_tabs_1" role="tab" class="tab" checked aria-label="Check photo" />
+		<div role="tabpanel" class="tab-content p-10">
+			<div class="mx-auto">
+				<div class="mx-auto">
+					{#if data.images}
+						<List images={data.images} />
+					{:else}
+						<!-- Optionally, provide feedback or alternative content when user is null -->
+						<p>Please log in to upload files.</p>
+					{/if}
+				</div>
+			</div>
+		</div>
 
 		<input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="Your photo" />
 		<div role="tabpanel" class="tab-content p-10">Tab content 3</div>
