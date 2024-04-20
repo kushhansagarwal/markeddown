@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { PUBLIC_API_ENDPOINT_PY } from '$env/static/public';
 	import exifr from 'exifr'; // to use ES Modules
+	import gemini from '$lib/assets/gemini.svg';
 
 	let imageUrl: string | null =
 		'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio29_6yqmbwu4P.jpg'; //null;
@@ -19,8 +20,10 @@
 	let imageMetadata: ImageMetadata = {};
 
 	let title: string = '';
-	let description: string =
-		'The warm California sun cast long shadows across the immaculate lawns of the university campus. As I strolled through, my Sony Alpha 7C gripped firmly in hand, I couldnt help but notice a young man, sharply dressed in a suit, sitting amidst the vibrant greenery. The juxtaposition of his formal attire against the casual backdrop of the campus grounds was intriguing. He was lost in thought, gazing into the distance, seemingly oblivious to the world around him. The 24mm F1.4 Sigma Art lens allowed me to capture a wide perspective, incorporating the iconic university buildings into the frame, while still maintaining a shallow depth of field, isolating the subject from the background. With a swift click, I froze this moment in time - a snapshot of contemplation amidst the hustle and bustle of university life. The daylight setting, coupled with the fast f/1.4 aperture and 1/500s shutter speed, ensured a crisp image with beautiful bokeh, further emphasizing the subject.  This image, taken on April 7th, 2024, serves as a reminder of the quiet moments of reflection that can be found even in the most unexpected places.';
+	let description: string = '';
+
+	let titleGenerationState = 'idle';
+	let descriptionGenerationState = 'idle';
 
 	let exifData = {};
 
@@ -166,70 +169,93 @@
 			{/if}
 		</div>
 		<div class="mt-5">
-			<div class="mb-2 font-bold">Title</div>
-			<div class="join w-full">
-				<input
-					type="text"
-					bind:value={title}
-					placeholder="Image title"
-					class="join-item input input-bordered mb-4 w-full text-sm"
-				/>
-				<button
-					disabled={imageBlob === null}
-					on:click={async () => {
-						const formData = new FormData();
-						if (imageBlob) formData.append('file', imageBlob);
+			<div class="flex">
+				<div class="mb-2 font-bold">Title</div>
+				{#if titleGenerationState === 'idle'}
+					<button
+						disabled={imageBlob === null}
+						on:click={async () => {
+							const formData = new FormData();
+							if (imageBlob) formData.append('file', imageBlob);
 
-						formData.append('exif', JSON.stringify(exifData));
-						formData.append('field', 'title');
+							formData.append('exif', JSON.stringify(exifData));
+							formData.append('field', 'title');
 
-						const response = await fetch(`/api/image/generate`, {
-							method: 'POST',
-							body: formData
-						});
+							titleGenerationState = 'loading';
 
-						if (response.ok) {
-							let responseJson = await response.json();
-							console.log(responseJson);
-							title = responseJson.response.candidates[0].content.parts[0].text;
-						} else {
-							console.error('Failed to generate image');
-						}
-					}}
-					class="join-item btn btn-secondary">Generate</button
-				>
+							const response = await fetch(`/api/image/generate`, {
+								method: 'POST',
+								body: formData
+							});
+
+              titleGenerationState = 'success';
+
+							if (response.ok) {
+								let responseJson = await response.json();
+								console.log(responseJson);
+								title = responseJson.response.candidates[0].content.parts[0].text;
+							} else {
+								console.error('Failed to generate image');
+							}
+						}}
+						class="join-item btn btn-xs ml-2 rounded-xl"
+					>
+						Generate <img src={gemini} class="h-3 w-3" />
+					</button>
+				{:else if titleGenerationState === 'loading'}
+					<span class="loading loading-spinner loading-xs mb-2 ml-2"></span>
+				{/if}
 			</div>
-			<div class="mb-2 font-bold">Description</div>
+			<input
+				type="text"
+				bind:value={title}
+				placeholder="Image title"
+				class="join-item input input-bordered mb-4 w-full text-sm"
+			/>
+
+			<div class="flex">
+				<div class="mb-2 font-bold">Description</div>
+				{#if descriptionGenerationState === 'idle'}
+					<button
+						disabled={imageBlob === null}
+						on:click={async () => {
+							const formData = new FormData();
+							if (imageBlob) formData.append('file', imageBlob);
+
+							formData.append('exif', JSON.stringify(exifData));
+							formData.append('field', 'description');
+
+							descriptionGenerationState = 'loading';
+
+							const response = await fetch(`/api/image/generate`, {
+								method: 'POST',
+								body: formData
+							});
+
+              descriptionGenerationState = 'success';
+
+							if (response.ok) {
+								let responseJson = await response.json();
+								console.log(responseJson);
+								description = responseJson.response.candidates[0].content.parts[0].text;
+							} else {
+								console.error('Failed to generate image');
+							}
+						}}
+						class="join-item btn btn-xs ml-2 rounded-xl"
+					>
+						Generate <img src={gemini} class="h-3 w-3" />
+					</button>
+				{:else if descriptionGenerationState === 'loading'}
+					<span class="loading loading-spinner loading-xs mb-2 ml-2"></span>
+				{/if}
+			</div>
 
 			<textarea
 				bind:value={description}
-				class="textarea textarea-bordered mb-4 w-full"
+				class="textarea textarea-bordered mb-4 h-48 w-full"
 				placeholder="Image description"
 			></textarea>
-			<button
-				disabled={imageBlob === null}
-				on:click={async () => {
-					const formData = new FormData();
-					if (imageBlob) formData.append('file', imageBlob);
-
-					formData.append('exif', JSON.stringify(exifData));
-					formData.append('field', 'description');
-
-					const response = await fetch(`/api/image/generate`, {
-						method: 'POST',
-						body: formData
-					});
-
-					if (response.ok) {
-						let responseJson = await response.json();
-						console.log(responseJson);
-						description = responseJson.response.candidates[0].content.parts[0].text;
-					} else {
-						console.error('Failed to generate image');
-					}
-				}}
-				class="join-item btn btn-secondary">Generate</button
-			>
 		</div>
 	</div>
 </section>
