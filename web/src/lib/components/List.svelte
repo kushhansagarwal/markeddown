@@ -5,6 +5,7 @@
 	import type { ImageDocument } from '../../routes/+layout.server';
 
 	export let images: ImageDocument[] = [];
+	$: filteredImages = images.filter((image) => image.type !== 'scan');
 </script>
 
 <div class="mx-auto w-full max-w-5xl p-4">
@@ -15,23 +16,21 @@
 	<div class="">
 		<div class="mb-2">
 			<div class="badge badge-primary badge-outline">EXIF</div>
-			 means it is protected by EXIF data
+			means it is protected by EXIF data
 		</div>
 		<div class="mb-2">
 			<div class="badge badge-accent badge-outline">Gemini</div>
-			 means it is protected by Gemini
+			means it is protected by Gemini
 		</div>
 		<div class="mb-2">
 			<div class="badge badge-secondary badge-outline">Watermark</div>
-			 means it is protected by a watermark
+			means it is protected by a watermark
 		</div>
 	</div>
 	<div class="divider"></div>
 	<div class="grid gap-4">
-		{#each images as image}
-			<div
-				class=" flex flex-col items-center justify-center gap-4 rounded-md p-0 md:flex-row"
-			>
+		{#each filteredImages as image}
+			<div class=" flex flex-col items-center justify-center gap-4 rounded-md p-0 md:flex-row">
 				<div class="w-full md:w-1/2">
 					<img
 						src={`https://ik.imagekit.io/wy49ay1bjy4c/markeddown/${image._id}?tr=w-1000`}
@@ -57,7 +56,7 @@
 					<a
 						href={`https://ik.imagekit.io/wy49ay1bjy4c/markeddown/${image._id}?tr=w-1000`}
 						download={image.title}
-						class="btn btn-default mb-5 mx-5">Download</a
+						class="btn btn-default mx-5 mb-5">Download</a
 					>
 				</div>
 			</div>

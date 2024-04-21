@@ -91,6 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
 					description: item.description,
 					embedding: item.embedding,
 					type: 'scan',
+					time: new Date(),
 					userId: email
 				}
 			},

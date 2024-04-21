@@ -99,8 +99,8 @@
 </script>
 
 <div class="mx-auto w-full max-w-5xl p-4">
-	<h2 class="mb-2 text-left text-2xl font-bold">Markdown a photo</h2>
-	<div class=" text-left">Upload photo and get the MarkedDown version</div>
+	<h2 class="mb-2 text-left text-2xl font-bold">Apply <span class="font-normal">Marked<span class="font-bold">Down</span></span></h2>
+	<div class=" text-left">Upload photo and get the <span class="font-normal">Marked<span class="font-bold">Down</span></span> version</div>
 	<div class="divider"></div>
 	<div class="flex flex-wrap items-stretch justify-between">
 		<div class="mb-4 w-full pr-4 lg:mb-0 lg:w-1/2">
@@ -154,7 +154,7 @@
 						<div class="card bg-base-100 max-h-[500px] shadow-xl">
 							<figure><img src={imageUrl} alt="Uploaded Image" class=" object-cover" /></figure>
 							<div class="card-body">
-								<h2 class="card-title">Succesfully MarkedDown!</h2>
+								<h2 class="card-title">Succesfully <span class="font-normal">Marked<span class="font-bold">Down</span></span>!</h2>
 								<p>
 									Download this photo and upload it on the web! Your photo has the unique ID <span
 										class="bg-base-200 rounded-md p-1 font-mono">{uuid}</span
@@ -282,7 +282,7 @@
 				class="checkbox checkbox-primary mr-3"
 			/>
 			<span class="label-text"
-				>By hitting Download, you are downloading a copy of the photo with your secure MarkedDown
+				>By hitting Download, you are downloading a copy of the photo with your secure <span class="font-normal">Marked<span class="font-bold">Down</span></span>
 				information stored in it. Download our Chrome Extension to scan websites you visit which
 				might have this photo copied on them. Alternatively, go to the "Your photos" tab to check
 				your photos. Remember, if an photo does not have your watermark, you would not be able to
@@ -321,7 +321,7 @@
 			disabled={!agreed}
 			class="btn btn-primary"
 		>
-			Download MarkedDown Image
+			Download <span class="font-normal">Marked<span class="font-bold">Down</span></span> Image
 		</button>
 	</div>
 </div>

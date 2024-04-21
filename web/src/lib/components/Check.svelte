@@ -52,6 +52,7 @@
 		const formData = new FormData();
 		formData.append('file', image);
 		formData.append('userId', data.user.email);
+		formData.append('url', 'self');
 		imageUrl = URL.createObjectURL(image);
 
 		const response = await fetch(`${PUBLIC_API_ENDPOINT_PY}/decodefile`, {
@@ -62,7 +63,7 @@
 		if (response.ok) {
 			uploadState = state.success;
 			const data = await response.json();
-			matchedImage = data.ObjectId;
+			matchedImage = data.uuid;
 			console.log(matchedImage);
 		} else {
 			console.error('Failed to upload image');
@@ -74,9 +75,9 @@
 </script>
 
 <div class="mx-auto w-full max-w-5xl p-4">
-	<h2 class="mb-2 text-left text-2xl font-bold">Scan a photo</h2>
+	<h2 class="mb-2 text-left text-2xl font-bold">Check a photo</h2>
 	<div class=" text-left">
-		Upload a photo and check to see if there are any MarkedDown identifiers present.
+		Upload a photo and check to see if there are any <span class="font-normal">Marked<span class="font-bold">Down</span></span> identifiers present.
 	</div>
 	<div role="alert" class="alert alert-warning my-4">
 		<svg
@@ -145,7 +146,7 @@
 			<div class="card bg-base-100 max-h-[500px] shadow-xl">
 				<figure><img src={imageUrl} alt="Uploaded Image" class=" object-cover" /></figure>
 				<div class="card-body">
-					<h2 class="card-title">Succesfully MarkedDown!</h2>
+					<h2 class="card-title">Succesfully<span class="font-normal">Marked<span class="font-bold">Down</span></span>!</h2>
 					<p class="mb-3 text-sm">
 						Matched Image ID: <span class="font-mono">{matchedImage}</span>
 					</p>

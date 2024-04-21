@@ -5,12 +5,14 @@ import clientPromise from '$lib/mongodb';
 const db = await clientPromise;
 
 export interface ImageDocument {
-    _id: string;
-    uuid: string;
-    description: string;
-    title: string;
-    embedding: number[];
-    similarity?: number;
+	_id: string;
+	uuid: string;
+	description: string;
+	title: string;
+	embedding: number[];
+	similarity?: number;
+	type?: string;
+    url?: string;
 }
 
 let images: ImageDocument[] = [];
@@ -29,11 +31,15 @@ export async function load({ request }: RequestEvent) {
 	if (isAuthenticated) {
 		// Need to implement, e.g: call an api, etc...
 		user = await kindeAuthClient.getUser(request as unknown as SessionManager);
-		images = await db.db('markeddown').collection<ImageDocument>('images').find({ userId: user.email }, { projection: { _id: 1, uuid: 1, description: 1, title: 1, embedding: 1 } }).toArray();
-        images = images.map(image => ({
-            ...image,
-            _id: image._id.toString()
-        }));
+		images = await db
+			.db('markeddown')
+			.collection<ImageDocument>('images')
+			.find({ userId: user.email })
+			.toArray();
+		images = images.map((image) => ({
+			...image,
+			_id: image._id.toString()
+		}));
 	} else {
 		// Need to implement, e.g: redirect user to sign in, etc..
 		user = {

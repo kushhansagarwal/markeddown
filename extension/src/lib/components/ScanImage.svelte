@@ -29,6 +29,7 @@
           const fileName = image.split("/").pop();
           const fileType = blob.type; // Dynamically determine the file type
           const file = new File([blob], fileName, { type: fileType });
+          formData.append("url", image);
           formData.append("file", file);
           formData.append("userId", email); // Ensure this is appended after the file
 

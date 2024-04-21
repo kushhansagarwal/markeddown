@@ -70,12 +70,14 @@ async def create_upload_file(file: UploadFile = File(...)):
 
 
 @app.post("/decodefile/")
-async def decode_file(file: UploadFile = File(...), userId: str = Form(...)):
+async def decode_file(file: UploadFile = File(...), userId: str = Form(...), url: str = Form(...)):
+    file_extension = file.filename.split('.')[-1]
+    decoded_file_name = f'decoded.{file_extension}'
     try:
-        with open('decoded.png', 'wb') as buffer:
+        with open(decoded_file_name, 'wb') as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        bgr = cv2.imread('decoded.png')
+        bgr = cv2.imread(decoded_file_name)
 
         decoder = WatermarkDecoder('uuid', 128)
         watermark = decoder.decode(bgr, 'dwtDctSvd')
@@ -86,7 +88,9 @@ async def decode_file(file: UploadFile = File(...), userId: str = Form(...)):
         else:
             match = client.markeddown.images.find_one({"uuid": watermark, "userId": userId})
             if match:
-                return JSONResponse(status_code=200, content={"match": "true", "ObjectId": str(match["_id"])})
+                if url != "self":
+                    client.markeddown.images.update_one({"url": url}, {"$set": {"uuid": watermark, "userId": userId, "type": 'scan'}}, upsert=True)
+                return JSONResponse(status_code=200, content={"match": "true", "uuid": watermark, "objectID": str(match["_id"])})
             else:
                 return JSONResponse(status_code=400, content={"error": "No match found"})
     except Exception as e:
