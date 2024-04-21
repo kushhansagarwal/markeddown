@@ -23,7 +23,7 @@
 			means it is protected by Gemini
 		</div>
 		<div class="mb-2">
-			<div class="badge badge-secondary badge-outline">Watermark</div>
+			<div class="badge badge-error badge-outline">Watermark</div>
 			means it is protected by a watermark
 		</div>
 	</div>
@@ -47,7 +47,7 @@
 						{/if}{#if image.description}
 							<div class="badge badge-accent badge-outline">Gemini</div>
 						{/if}{#if image.uuid}
-							<div class="badge badge-secondary badge-outline">Watermark</div>
+							<div class="badge badge-error badge-outline">Watermark</div>
 						{/if}
 					</div>
 					<div class="mb-5 px-5 text-justify text-sm">

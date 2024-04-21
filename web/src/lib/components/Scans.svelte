@@ -34,7 +34,7 @@
 	</div>
 	<div class="">
 		<div class="mb-2">
-			<div class="badge badge-secondary badge-outline">Watermark</div>
+			<div class="badge badge-error badge-outline">Watermark</div>
 			indicates that the photo has your unique signed watermark. If it was shared without your consent,
 			you can prove that it is yours.
 		</div>

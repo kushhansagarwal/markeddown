@@ -63,7 +63,8 @@ export const POST: RequestHandler = async ({ request }) => {
 					title,
 					description,
 					userId,
-					exifJson
+					exifJson,
+                    type: 'self'
 				}
 			},
 			{ upsert: true }
