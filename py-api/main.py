@@ -19,7 +19,7 @@ from uagents.query import query
 
 
  
-AGENT_ADDRESS = "agent1qfw3kvv2qwd4r6ghxdtru4pyfk5k8mrtdexq73w9mqd4vw7jqqtg698z0x8"
+AGENT_ADDRESS = "agent1qw8qj2xy5vwgeux5a208ukkdhr9uwtnjk0pd0nr2eeqgqk2a48u0w3w5k0d"
  
 class TestRequest(Model):
     message: str
@@ -119,7 +119,7 @@ async def decode_file(file: UploadFile = File(...), userId: str = Form(...), url
 async def make_agent_call(req: TestRequest):
     try:
         res = await agent_query(req)
-        return f"successful call - agent response: {res}"
+        return res
     except Exception:
         return "unsuccessful agent call"
 
