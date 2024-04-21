@@ -1,27 +1,70 @@
 <script lang="ts">
-	import fetch from '$lib/assets/fetch.svg';
+	import fetch from '$lib/assets/fetch-logo.svg';
+	import gemini from '$lib/assets/gemini.svg';
+
+	let URLTable: string[] = ['https://www.fetch.ai', 'https://www.gemini.com'];
+	let currentURL: string = '';
+
+	function handleKeydown(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			console.log('Enter pressed');
+			if (currentURL.startsWith('http://') || currentURL.startsWith('https://')) {
+				URLTable = [...URLTable, currentURL];
+				currentURL = '';
+			} else {
+				console.error('Invalid URL. Please make sure it starts with http:// or https://');
+			}
+		}
+	}
 </script>
 
 <div class="mx-auto w-full max-w-5xl p-4">
-	<h2 class="mb-2 text-left text-2xl font-bold">View your scans</h2>
-	<div class="mb-5 text-left text-gray-500">
-		These are the photos you scanned from the Chrome extension
+	<div class="flex flex-grow">
+		<h2 class="mr-3 text-left text-2xl font-bold">Protect your assets with</h2>
+		<img alt="scan" src={fetch} class="h-7" />
 	</div>
+	<p class="mb-5 text-xs text-gray-400">The Fetch.ai logo is a registered trademark of Fetch.ai</p>
+
 	<div class="">
 		<div class="mb-2">
-			<div class="badge badge-error badge-outline">Watermark</div>
-			indicates that the photo has your unique signed watermark. If it was shared without your consent,
-			you can prove that it is yours.
-		</div>
-		<div class="mb-2">
-			<button class="btn btn-default btn-xs"
-				>Search
-				<img alt="scan" src={fetch} class="h-3 w-3" /></button
-			>
-			indicates that the photo has been indexed but not yet scanned. You can scan for similarity to your
-			images.
+			<p>
+				Protect your media using Fetch.ai's agent-based technology and Gemini's groundbreaking NIAH
+				(Needle in a Haystack) accuracy to scan the web for your images.
+			</p>
 		</div>
 	</div>
 	<div class="divider"></div>
-	
+	<h1 class="mb-2 text-2xl font-bold">Scan URLs</h1>
+	<input
+		type="text"
+		placeholder="Paste a URL and hit enter"
+		class="input input-bordered w-full"
+		bind:value={currentURL}
+		on:keydown={handleKeydown}
+	/>
+	<div class="overflow-x-auto mb-4">
+		<table class="table">
+			<!-- head -->
+			<thead>
+				<tr>
+					<th></th>
+					<th>URL</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each URLTable as url, index}
+					<tr>
+						<td
+							on:click={() => {
+								URLTable = URLTable.filter((_, i) => i !== index);
+							}}
+							class="w-4 text-gray-100">✖</td
+						>
+						<td class="font-mono">{url}</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
+	<h1 class="mb-2 text-2xl font-bold">Recent scans</h1>
 </div>

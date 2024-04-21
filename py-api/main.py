@@ -13,6 +13,53 @@ import uuid
 import piexif
 from PIL import Image
 from fastapi.responses import JSONResponse
+import json
+from uagents import Model
+from uagents.query import query
+
+from uagents import Agent, Context, Model
+ 
+class TestRequest(Model):
+    message: str
+ 
+class Response(Model):
+    text: str
+ 
+agent = Agent(
+    name="your_agent_name_here",
+    seed="your_agent_seed_here",
+    port=8001,
+    endpoint="http://localhost:8001/submit",
+)
+ 
+@agent.on_event("startup")
+async def startup(ctx: Context):
+    ctx.logger.info(f"Starting up {agent.name}")
+    ctx.logger.info(f"With address: {agent.address}")
+    ctx.logger.info(f"And wallet address: {agent.wallet.address()}")
+ 
+@agent.on_query(model=TestRequest, replies={Response})
+async def query_handler(ctx: Context, sender: str, _query: TestRequest):
+    ctx.logger.info("Query received")
+    try:
+        # do something here
+        await ctx.send(sender, Response(text="success"))
+    except Exception:
+        await ctx.send(sender, Response(text="fail"))
+ 
+
+AGENT_ADDRESS = "agent1qfw3kvv2qwd4r6ghxdtru4pyfk5k8mrtdexq73w9mqd4vw7jqqtg698z0x8"
+ 
+class TestRequest(Model):
+    message: str
+ 
+async def agent_query(req):
+    response = await query(destination=AGENT_ADDRESS, message=req, timeout=15.0)
+    data = json.loads(response.decode_payload())
+    return data["text"]
+ 
+app = FastAPI()
+ 
 
 app = FastAPI()
 
@@ -96,7 +143,17 @@ async def decode_file(file: UploadFile = File(...), userId: str = Form(...), url
     except Exception as e:
         print(e)
         return JSONResponse(status_code=500, content={"error": "An error occurred during the decoding process"})
+ 
+@app.post("/agent/endpoint")
+async def make_agent_call(req: TestRequest):
+    try:
+        res = await agent_query(req)
+        return f"successful call - agent response: {res}"
+    except Exception:
+        return "unsuccessful agent call"
 
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=8000)
+    agent.run()
+
