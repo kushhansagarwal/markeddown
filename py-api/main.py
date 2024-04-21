@@ -16,13 +16,14 @@ from fastapi.responses import JSONResponse
 import json
 from uagents import Model
 from uagents.query import query
-
+import datetime
 
  
 AGENT_ADDRESS = "agent1qw8qj2xy5vwgeux5a208ukkdhr9uwtnjk0pd0nr2eeqgqk2a48u0w3w5k0d"
  
 class TestRequest(Model):
     message: str
+    email: str
  
 async def agent_query(req):
     response = await query(destination=AGENT_ADDRESS, message=req, timeout=15.0)
@@ -118,7 +119,17 @@ async def decode_file(file: UploadFile = File(...), userId: str = Form(...), url
 @app.post("/agent/endpoint")
 async def make_agent_call(req: TestRequest):
     try:
+        timeNow = datetime.datetime.now()
+        print(req.email)
         res = await agent_query(req)
+        formattedResponse = res.replace('"', '').split(', ')
+        db = client.markeddown
+        db.scans.insert_one({
+            "urls": formattedResponse,
+            "website": req.message,
+            "userId": req.email,
+            "time": timeNow
+        })
         return res
     except Exception:
         return "unsuccessful agent call"

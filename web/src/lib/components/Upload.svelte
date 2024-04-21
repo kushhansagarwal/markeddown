@@ -114,7 +114,7 @@
 				{#if uploadState === 'idle'}
 					<label for="upload" class="h-full w-full cursor-pointer">
 						<div
-							class="flex h-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-4"
+							class="flex h-full min-h-48 flex-col items-center justify-center rounded-lg border-gray-300 bg-base-200 p-4"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -136,25 +136,12 @@
 						<input on:change={(e) => handleSubmit(e)} id="upload" type="file" class="hidden" />
 					</label>
 				{:else if uploadState === 'loading'}
-					<div
-						class="flex h-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-4"
+					<div class="w-full"><div
+						class="flex h-full min-h-48 flex-col items-center justify-center rounded-lg border-gray-300 bg-base-200 p-4"
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-12 w-12 animate-spin"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12"
-							/>
-						</svg>
+						<span class="loading loading-spinner loading-lg"></span>
 						<span>Marking down</span>
-					</div>
+					</div></div>
 				{:else}
 					<div>
 						<div class="card max-h-[500px] bg-base-100 shadow-xl">
@@ -178,7 +165,7 @@
 		</div>
 		{#if imageUrl}
 			<div
-				class="h-full max-h-[500px] w-full overflow-auto rounded-lg bg-base-200 p-5 px-4 lg:w-1/2"
+				class="h-full min-h-48 max-h-[500px] w-full overflow-auto rounded-lg bg-base-200 p-5 px-4 lg:w-1/2"
 			>
 				<!-- <h3 class="text-lg font-semibold">EXIF Data</h3> -->
 				{#if inputDisabled}
@@ -302,6 +289,7 @@
 		</label>
 		<button
 			on:click={async () => {
+				agreed = false;
 				const formData = new FormData();
 				if (imageBlob) formData.append('file', imageBlob);
 
@@ -333,9 +321,11 @@
 				}
 			}}
 			disabled={!agreed}
-			class="btn btn-primary"
+			class="btn-default btn"
 		>
-			Download <span class="font-normal">Marked<span class="font-bold">Down</span></span> Image
+			<p>
+				Download <span class="font-normal">Marked<span class="font-bold">Down</span></span> Image
+			</p>
 		</button>
 	</div>
 </div>

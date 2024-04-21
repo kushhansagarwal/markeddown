@@ -50,7 +50,6 @@
 	</div>
 	<div class=" w-full md:w-1/2">
 		<!-- <div class="mb-2 px-5 font-mono text-xs">{image.url}</div> -->
-
 		{#if image.uuid}
 			<div class="mb-4 flex gap-2 px-5">
 				<div class="badge badge-error badge-outline">Watermark</div>

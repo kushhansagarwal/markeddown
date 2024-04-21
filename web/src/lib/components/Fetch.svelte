@@ -2,72 +2,41 @@
 	import { PUBLIC_API_ENDPOINT_PY } from '$env/static/public';
 	import fetchLogo from '$lib/assets/fetch-logo.svg';
 	import gemini from '$lib/assets/gemini.svg';
+	import FetchScanned from './FetchScanned.svelte';
 
 	let URLTable: string[] = []; // ['https://www.fetch.ai', 'https://www.gemini.com'];
 	let currentURL: string = '';
+
+	export let email: string;
+
+	export let existingScans: {
+		urls: string[];
+		website: string;
+		time: string;
+	}[] = [];
 
 	let scans: {
 		urls: string[];
 		website: string;
 		time: string;
 	}[] = [
+		...existingScans,
 		{
 			urls: [
 				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio3_L6ZRpw-Tb.jpg',
 				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio4_y9tg5EXsC.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio8_iOgKa4obO.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio2_KD5B4I49M.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio14_uIiv-pxrg.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio15_go9RQ9RCva.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio27_GBfnxXxNA.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio26_-zJ3T8aJXj.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio32_yqEN10OvTK.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio31_bHmmETwhU.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/9d4f65da-4f59-40d8-9b34-63a077bc9a4c_rw_1920_AeBuxA1DuL.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/3bec9c7e-1bd8-4a88-a138-7c170caecfa9_rw_1920_CW878vYhtR.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/b05d557e-69a9-463e-af2e-641a23a3fdbe_rw_1920_zMpGeLiIEn.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/e2c4e162-faab-487f-af00-4b191cfbdb0e_rw_1920_fIeEN-yp1v.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC00455-Edit_fvjg3G5bb.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC00381_UWrzktkNW.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC00711-Edit-3_sxdGjyUG0.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC00658-2_Qw5H9UC84.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC00670-2_RjGU5JE0rv.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC02226_vylFMwG94b.jpeg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC01702_vTq5k0YfCx.jpeg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC01082_jYEWrcvQR.jpeg"'
-			],
-			website: 'https://www.kush.photos/?tag=portrait',
-			time: '21/04/2024, 00:44:13'
-		},
-		{
-			urls: [
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio3_L6ZRpw-Tb.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio4_y9tg5EXsC.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio8_iOgKa4obO.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio2_KD5B4I49M.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio14_uIiv-pxrg.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio15_go9RQ9RCva.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio27_GBfnxXxNA.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio26_-zJ3T8aJXj.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio32_yqEN10OvTK.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio31_bHmmETwhU.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/9d4f65da-4f59-40d8-9b34-63a077bc9a4c_rw_1920_AeBuxA1DuL.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/3bec9c7e-1bd8-4a88-a138-7c170caecfa9_rw_1920_CW878vYhtR.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/b05d557e-69a9-463e-af2e-641a23a3fdbe_rw_1920_zMpGeLiIEn.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/e2c4e162-faab-487f-af00-4b191cfbdb0e_rw_1920_fIeEN-yp1v.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC00455-Edit_fvjg3G5bb.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC00381_UWrzktkNW.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC00711-Edit-3_sxdGjyUG0.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC00658-2_Qw5H9UC84.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC00670-2_RjGU5JE0rv.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC02226_vylFMwG94b.jpeg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC01702_vTq5k0YfCx.jpeg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/DSC01082_jYEWrcvQR.jpeg"'
+				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio8_iOgKa4obO.jpg'
 			],
 			website: 'https://www.kush.photos/?tag=portrait',
 			time: '21/04/2024, 00:44:13'
 		}
 	];
+
+	let newScans: {
+		urls: string[];
+		website: string;
+		time: string;
+	}[] = [];
 
 	let disableInput: boolean = false;
 	let disableButton: boolean = false;
@@ -170,7 +139,7 @@
 						headers: {
 							'Content-Type': 'application/json'
 						},
-						body: JSON.stringify({ message: url })
+						body: JSON.stringify({ message: url, email })
 					})
 						.then((response) => {
 							if (!response.ok) {
@@ -181,14 +150,17 @@
 						})
 						.then((textData) => {
 							scanStates[index] = state.SUCCESS;
-							const formattedResponse = textData.replace('"', '').split(', ');
-							scans = [
-								...scans,
+							let formattedResponse = textData.replace('"', '').split(', ');
+							formattedResponse = formattedResponse.filter((url) =>
+								url.match(/\.(jpeg|jpg|png)$/i)
+							);
+							newScans = [
 								{
 									urls: formattedResponse,
 									website: url,
 									time: new Date().toLocaleString()
-								}
+								},
+								...newScans
 							];
 						})
 						.catch((error) => {
@@ -200,27 +172,23 @@
 				});
 
 				Promise.all(fetchPromises).then(() => {
-					console.log(scans); // Handle the response data
+					console.log(newScans); // Handle the response data
 					disableInput = false;
 				});
 			}}>Scan with <img alt="scan" src={fetchLogo} class="h-3" /></button
 		>
+	</div>
+	<div class="grid gap-5 mb-5">
+		{#each newScans as scan}
+			<FetchScanned aged={false} {email} {scan} />
+		{/each}
 	</div>
 
 	<h1 class="mb-2 text-2xl font-bold">Recent scans</h1>
 
 	<div class="grid gap-5">
 		{#each scans as scan}
-			<div class="rounded-md bg-base-200 p-5">
-				<p class="font-mono">{scan.website}</p>
-				<p class="mb-5 text-xs text-gray-400">{scan.time}</p>
-				<p class="mb-2 font-bold">Images</p>
-				<div class="grid grid-cols-5 gap-4">
-					{#each scan.urls as url}
-						<img src={url.replace('"', '')} alt="scan" class="rounded-md object-cover shadow-lg" />
-					{/each}
-				</div>
-			</div>
+			<FetchScanned aged={true} {email} {scan} />
 		{/each}
 	</div>
 </div>

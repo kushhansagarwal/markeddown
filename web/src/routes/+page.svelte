@@ -18,7 +18,7 @@
 		fetch = 'fetch'
 	}
 
-	let currentSection = section.list;
+	let currentSection = section.upload;
 
 	onMount(() => {
 		if (!data.isAuthenticated) {
@@ -126,7 +126,7 @@
 		<div class="mx-auto">
 			<div class="mx-auto">
 				{#if data.images}
-					<Scans email={data.user?.email} images={data.images} />
+					<Scans scans={data.scans} email={data.user?.email} images={data.images} />
 				{:else}
 					<!-- Optionally, provide feedback or alternative content when user is null -->
 					<p>Please log in to upload files.</p>
@@ -148,7 +148,7 @@
 		<div class="mx-auto">
 			<div class="mx-auto">
 				{#if data.user}
-					<Fetch />
+					<Fetch existingScans={data.scans} email={data.user.email} />
 				{:else}
 					<!-- Optionally, provide feedback or alternative content when user is null -->
 					<p>Please log in to upload files.</p>

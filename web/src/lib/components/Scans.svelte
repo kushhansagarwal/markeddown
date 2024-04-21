@@ -15,6 +15,14 @@
 	}
 
 	export let email: string;
+	export let scans: {
+		urls: string[];
+		website: string;
+		time: string;
+	}[] = [];
+
+	let websites = [...new Set(scans.map((scan) => scan.website))];
+	let selectedWebsite: string | undefined = undefined;
 
 	export let images: ImageDocument[] = [];
 	$: filteredImages = images.filter((image) => image.type == 'scan');
@@ -27,6 +35,21 @@
 			return 0;
 		}
 	});
+	$: if (selectedWebsite && selectedWebsite !== 'Sort by website') {
+		filteredImages = images.filter((image) => image.type == 'scan');
+		const websiteUrls = scans.find((scan) => scan.website == selectedWebsite)?.urls;
+		const allUrls = scans.map((scan) => scan.urls).flat();
+		let intersection: string[] = [];
+		console.log(filteredImages, websiteUrls, allUrls);
+		if (websiteUrls && allUrls) {
+			intersection = websiteUrls.filter((url) => allUrls.includes(url));
+			console.log('Intersection:', intersection);
+		}
+		if (websiteUrls) {
+			filteredImages = filteredImages.filter((image) => intersection.includes(image.url?.replace(" ","") ?? ''));
+			console.log(filteredImages);
+		}
+	}
 </script>
 
 <div class="mx-auto w-full max-w-5xl p-4">
@@ -41,7 +64,7 @@
 			you can prove that it is yours.
 		</div>
 		<div class="mb-2">
-			<button class="btn btn-default btn-xs"
+			<button class="btn-default btn btn-xs"
 				>Search
 				<img alt="scan" src={gemini} class="h-3 w-3" /></button
 			>
@@ -50,6 +73,12 @@
 		</div>
 	</div>
 	<div class="divider"></div>
+	<select bind:value={selectedWebsite} class="select mb-5 w-full bg-base-200">
+		<option disabled selected>Sort by website</option>
+		{#each websites as website}
+			<option value={website}>{website}</option>
+		{/each}
+	</select>
 	<div class="grid gap-4">
 		{#each filteredImages as image}
 			<ScannedImage {email} {image} />

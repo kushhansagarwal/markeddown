@@ -4,6 +4,16 @@ import clientPromise from '$lib/mongodb';
 
 const db = await clientPromise;
 
+export interface ScanDocument {
+	website: string;
+	userID: string;
+	urls: string[];
+	time: string;
+	_id: string;
+}
+
+let scans: ScanDocument[] = [];
+
 export interface ImageDocument {
 	_id: string;
 	uuid: string;
@@ -41,6 +51,13 @@ export async function load({ request }: RequestEvent) {
 			...image,
 			_id: image._id.toString()
 		}));
+
+		scans = await db.db('markeddown').collection<ScanDocument>('scans').find({ userId: user.email }).toArray();
+
+		scans = scans.map((scan) => ({
+			...scan,
+			_id: scan._id.toString()
+		}));
 	} else {
 		// Need to implement, e.g: redirect user to sign in, etc..
 		user = {
@@ -55,6 +72,7 @@ export async function load({ request }: RequestEvent) {
 	return {
 		isAuthenticated,
 		user,
-		images
+		images,
+		scans
 	};
 }

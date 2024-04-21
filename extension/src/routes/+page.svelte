@@ -77,10 +77,13 @@
           const formData = new FormData();
           formData.append("email", email);
           formData.append("urls", testImages.join(", ").replaceAll('"', ""));
-          const response = await fetch("http://localhost:5173/api/image/scansite", {
-            method: "POST",
-            body: formData,
-          });
+          const response = await fetch(
+            "http://localhost:5173/api/image/scansite",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
 
           if (response.ok) {
             console.log("Site scanned successfully");
