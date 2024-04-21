@@ -42,11 +42,6 @@
             throw new Error("Failed to submit form");
           } else {
             currentState = state.SUCCESS;
-            const scanButton = document.getElementById("scanButton");
-            if (scanButton) {
-              scanButton.innerHTML = "Found";
-              scanButton.style.backgroundColor = "#FFCCCB";
-            }
           }
           const data = await postResponse.json();
           console.log(data);

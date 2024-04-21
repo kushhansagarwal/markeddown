@@ -19,18 +19,7 @@
 		urls: string[];
 		website: string;
 		time: string;
-	}[] = [
-		...existingScans,
-		{
-			urls: [
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio3_L6ZRpw-Tb.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio4_y9tg5EXsC.jpg',
-				'https://ik.imagekit.io/wy49ay1bjy4c/portfolio/portfolio8_iOgKa4obO.jpg'
-			],
-			website: 'https://www.kush.photos/?tag=portrait',
-			time: '21/04/2024, 00:44:13'
-		}
-	];
+	}[] = [...existingScans];
 
 	let newScans: {
 		urls: string[];
@@ -178,7 +167,7 @@
 			}}>Scan with <img alt="scan" src={fetchLogo} class="h-3" /></button
 		>
 	</div>
-	<div class="grid gap-5 mb-5">
+	<div class="mb-5 grid gap-5">
 		{#each newScans as scan}
 			<FetchScanned aged={false} {email} {scan} />
 		{/each}
