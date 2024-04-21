@@ -28,8 +28,11 @@ export const POST: RequestHandler = async ({ request }) => {
 	const description = formData.get('description') as string;
 	const userId = formData.get('userId') as string;
 	const objectId = formData.get('objectId') as string;
-	const exifData = formData.get('exif') as string;
-	const exifJson = await JSON.parse(exifData);
+	let exifJson;
+	const exifData = formData.get('exif');
+	if (exifData) {
+		exifJson = JSON.parse(exifData as string);
+	}
 	const imageBuffer = await imageFile?.arrayBuffer();
 	const resizedImageBuffer = await sharp(imageBuffer).resize(500).toBuffer();
 
@@ -63,8 +66,8 @@ export const POST: RequestHandler = async ({ request }) => {
 					title,
 					description,
 					userId,
-					exifJson,
-                    type: 'self'
+					...(exifJson && {exifJson}),
+					type: 'self'
 				}
 			},
 			{ upsert: true }

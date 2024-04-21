@@ -1,5 +1,6 @@
 <script lang="ts">
 	import gemini from '$lib/assets/gemini.svg';
+	import { onMount } from 'svelte';
 	interface ImageDocument {
 		_id: string;
 		uuid: string;
@@ -11,6 +12,36 @@
 		url?: string;
 	}
 	export let image: ImageDocument;
+	export let email: string;
+
+	enum state {
+		IDLE,
+		LOADING,
+		SUCCESS,
+		ERROR
+	}
+
+	onMount(() => {
+		const formData = new FormData();
+		formData.append('embedding', JSON.stringify(image.embedding));
+		formData.append('userId', email);
+
+		fetch(`/api/image/vectorScan`, {
+			method: 'POST',
+			body: formData
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data);
+				images = [...data.searchResults];
+			});
+	});
+
+	let scanState = state.IDLE;
+	let images: {
+		_id: string;
+		score: number;
+	}[] = [];
 </script>
 
 <div class=" flex flex-col items-start justify-center gap-4 rounded-md p-0 md:flex-row">
@@ -24,7 +55,7 @@
 			<div class="mb-4 flex gap-2 px-5">
 				<div class="badge badge-error badge-outline">Watermark</div>
 			</div>
-			<div role="alert" class="alert alert-default mx-5 w-max px-5">
+			<div role="alert" class="alert-default alert mx-5 w-max px-5">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					class="h-6 w-6 shrink-0 stroke-current"
@@ -38,18 +69,18 @@
 					/></svg
 				>
 				<span
-					>This image is guaranteed to be yours <button class="btn btn-default shadow-lg"
+					>This image is guaranteed to be yours <button class="btn-default btn shadow-lg"
 						>Report now</button
 					></span
 				>
 			</div>
 		{:else}
-			<div class="px-4">
+			<!-- <div class="px-4">
 				<button
 					on:click={() => {
 						const formData = new FormData();
 						formData.append('embedding', JSON.stringify(image.embedding));
-						formData.append('userId', 'user@example.com');
+						formData.append('userId', email);
 
 						fetch(`/api/image/vectorScan`, {
 							method: 'POST',
@@ -58,12 +89,25 @@
 							.then((response) => response.json())
 							.then((data) => {
 								console.log(data);
+								images = data.searchResults;
 							});
 					}}
-					class="btn btn-default"
+					class="btn-default btn"
 					>Search
 					<img alt="scan" src={gemini} class="h-6 w-6" /></button
 				>
+			</div> -->
+
+			<div class="grid grid-cols-2 gap-4 px-5">
+				{#each images as image}
+					<div class="flex flex-col items-center justify-center gap-2">
+						<img
+							src={`https://ik.imagekit.io/wy49ay1bjy4c/markeddown/${image._id}?tr=w-600,h-600`}
+							alt={image._id}
+							class={`rounded-md border-4 ${image.score > 0.95 ? 'border-red-200' : image.score > 0.9 ? 'border-yellow-200' : 'border-green-200'} object-cover shadow-lg`}
+						/>
+					</div>
+				{/each}
 			</div>
 		{/if}
 	</div>

@@ -12,6 +12,7 @@ export interface ImageDocument {
 	embedding: number[];
 	similarity?: number;
 	type?: string;
+	exifJson?: any;
     url?: string;
 }
 

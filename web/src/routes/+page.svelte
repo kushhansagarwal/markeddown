@@ -4,7 +4,9 @@
 	import { goto } from '$app/navigation';
 	import List from '$lib/components/List.svelte';
 	import Check from '$lib/components/Check.svelte';
-  import Scans from '$lib/components/Scans.svelte';
+	import Scans from '$lib/components/Scans.svelte';
+	import gemini from '$lib/assets/gemini.svg';
+	import Fetch from '$lib/components/Fetch.svelte';
 
 	export let data;
 
@@ -12,10 +14,11 @@
 		upload = 'MarkDown photo',
 		list = 'Your photos',
 		photo = 'photo',
-		scans = 'scans'
+		scans = 'scans',
+		fetch = 'fetch'
 	}
 
-	let currentSection = section.upload;
+	let currentSection = section.list;
 
 	onMount(() => {
 		if (!data.isAuthenticated) {
@@ -26,18 +29,20 @@
 
 <div class="navbar bg-base-100 p-3">
 	<div class="flex-1">
-		<a class="btn btn-ghost text-xl"><span class="font-normal">Marked<span class="font-bold">Down</span></span></a>
+		<a class="btn btn-ghost text-xl"
+			><span class="font-normal">Marked<span class="font-bold">Down</span></span></a
+		>
 	</div>
 	<div class="flex-none gap-2">
 		<div class="dropdown dropdown-end">
-			<div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+			<div tabindex="0" role="button" class="avatar btn btn-circle btn-ghost">
 				<div class="w-10 rounded-full">
 					<img alt="Tailwind CSS Navbar component" src={data.user?.picture} />
 				</div>
 			</div>
 			<ul
 				tabindex="0"
-				class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+				class="menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
 			>
 				<li><a href="/api/auth/logout">Chrome Auth</a></li>
 				<li><a class="font-bold" href="/api/auth/logout">Logout</a></li>
@@ -54,7 +59,7 @@
 			checked
 			name="my_tabs_1"
 			role="tab"
-			class="tab text-md"
+			class="text-md tab"
 			aria-label="Apply MarkedDown"
 		/>
 
@@ -83,6 +88,14 @@
 			role="tab"
 			class="tab"
 			aria-label="Check photo"
+		/>
+		<input
+			on:click={() => (currentSection = section.fetch)}
+			type="radio"
+			name="my_tabs_1"
+			role="tab"
+			class="tab"
+			aria-label="Fetch.ai"
 		/>
 	</div>
 </div>
@@ -113,7 +126,7 @@
 		<div class="mx-auto">
 			<div class="mx-auto">
 				{#if data.images}
-					<Scans images={data.images} />
+					<Scans email={data.user?.email} images={data.images} />
 				{:else}
 					<!-- Optionally, provide feedback or alternative content when user is null -->
 					<p>Please log in to upload files.</p>
@@ -125,6 +138,17 @@
 			<div class="mx-auto">
 				{#if data.user}
 					<Check {data} />
+				{:else}
+					<!-- Optionally, provide feedback or alternative content when user is null -->
+					<p>Please log in to upload files.</p>
+				{/if}
+			</div>
+		</div>
+	{:else if currentSection === section.fetch}
+		<div class="mx-auto">
+			<div class="mx-auto">
+				{#if data.user}
+					<Fetch />
 				{:else}
 					<!-- Optionally, provide feedback or alternative content when user is null -->
 					<p>Please log in to upload files.</p>

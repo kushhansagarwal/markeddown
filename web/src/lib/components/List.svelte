@@ -42,7 +42,7 @@
 					<div class="px-5 pt-5 text-xl font-bold">{image.title}</div>
 					<div class="font-mon mb-2 px-5 text-xs">{image.uuid}</div>
 					<div class="mb-4 flex gap-2 px-5">
-						{#if image.embedding}
+						{#if image.exifJson}
 							<div class="badge badge-primary badge-outline">EXIF</div>
 						{/if}{#if image.description}
 							<div class="badge badge-accent badge-outline">Gemini</div>

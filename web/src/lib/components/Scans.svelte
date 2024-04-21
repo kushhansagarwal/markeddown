@@ -14,6 +14,8 @@
 		url?: string;
 	}
 
+	export let email: string;
+
 	export let images: ImageDocument[] = [];
 	$: filteredImages = images.filter((image) => image.type == 'scan');
 	$: sortedImages = filteredImages.sort((a, b) => {
@@ -39,17 +41,18 @@
 			you can prove that it is yours.
 		</div>
 		<div class="mb-2">
-			<button  class="btn btn-default btn-xs"
+			<button class="btn btn-default btn-xs"
 				>Search
 				<img alt="scan" src={gemini} class="h-3 w-3" /></button
 			>
-			indicates that the photo has been indexed but not yet scanned. You can scan for similarity to your images.
+			indicates that the photo has been indexed but not yet scanned. You can scan for similarity to your
+			images.
 		</div>
 	</div>
 	<div class="divider"></div>
 	<div class="grid gap-4">
 		{#each filteredImages as image}
-			<ScannedImage {image} />
+			<ScannedImage {email} {image} />
 		{/each}
 	</div>
 </div>

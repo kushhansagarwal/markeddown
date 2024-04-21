@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
 					path: 'embedding',
 					queryVector: embeddingArray,
 					numCandidates: 10,
-					limit: 10,
+					limit: 4,
 					filter: {
 						userId: { $eq: userId },
 						type: { $ne: 'scan' }
@@ -37,6 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				$project: {
 					score: { $meta: 'vectorSearchScore' },
 					description: 1,
+					userId: 1,
 					_id: 1
 				}
 			}

@@ -99,8 +99,14 @@
 </script>
 
 <div class="mx-auto w-full max-w-5xl p-4">
-	<h2 class="mb-2 text-left text-2xl font-bold">Apply <span class="font-normal">Marked<span class="font-bold">Down</span></span></h2>
-	<div class=" text-left">Upload photo and get the <span class="font-normal">Marked<span class="font-bold">Down</span></span> version</div>
+	<h2 class="mb-2 text-left text-2xl font-bold">
+		Apply <span class="font-normal">Marked<span class="font-bold">Down</span></span>
+	</h2>
+	<div class=" text-left">
+		Upload photo and get the <span class="font-normal"
+			>Marked<span class="font-bold">Down</span></span
+		> version
+	</div>
 	<div class="divider"></div>
 	<div class="flex flex-wrap items-stretch justify-between">
 		<div class="mb-4 w-full pr-4 lg:mb-0 lg:w-1/2">
@@ -151,13 +157,17 @@
 					</div>
 				{:else}
 					<div>
-						<div class="card bg-base-100 max-h-[500px] shadow-xl">
+						<div class="card max-h-[500px] bg-base-100 shadow-xl">
 							<figure><img src={imageUrl} alt="Uploaded Image" class=" object-cover" /></figure>
 							<div class="card-body">
-								<h2 class="card-title">Succesfully <span class="font-normal">Marked<span class="font-bold">Down</span></span>!</h2>
+								<h2 class="card-title">
+									Succesfully <span class="font-normal"
+										>Marked<span class="font-bold">Down</span></span
+									>!
+								</h2>
 								<p>
 									Download this photo and upload it on the web! Your photo has the unique ID <span
-										class="bg-base-200 rounded-md p-1 font-mono">{uuid}</span
+										class="rounded-md bg-base-200 p-1 font-mono">{uuid}</span
 									>
 								</p>
 							</div>
@@ -168,7 +178,7 @@
 		</div>
 		{#if imageUrl}
 			<div
-				class="bg-base-200 h-full max-h-[500px] w-full overflow-auto rounded-lg p-5 px-4 lg:w-1/2"
+				class="h-full max-h-[500px] w-full overflow-auto rounded-lg bg-base-200 p-5 px-4 lg:w-1/2"
 			>
 				<!-- <h3 class="text-lg font-semibold">EXIF Data</h3> -->
 				{#if inputDisabled}
@@ -213,7 +223,7 @@
 							console.error('Failed to generate image');
 						}
 					}}
-					class="join-item btn btn-xs ml-2 rounded-xl"
+					class="btn join-item btn-xs ml-2 rounded-xl"
 				>
 					Generate <img src={gemini} class="h-3 w-3" />
 				</button>
@@ -226,7 +236,7 @@
 			disabled={inputDisabled}
 			bind:value={title}
 			placeholder="Image title"
-			class="join-item input input-bordered mb-4 w-full text-sm"
+			class="input join-item input-bordered mb-4 w-full text-sm"
 		/>
 
 		<div class="flex">
@@ -258,7 +268,7 @@
 							console.error('Failed to generate image');
 						}
 					}}
-					class="join-item btn btn-xs ml-2 rounded-xl"
+					class="btn join-item btn-xs ml-2 rounded-xl"
 				>
 					Generate <img src={gemini} class="h-3 w-3" />
 				</button>
@@ -279,14 +289,15 @@
 				disabled={inputDisabled || title == '' || description == ''}
 				bind:value={agreed}
 				type="checkbox"
-				class="checkbox checkbox-primary mr-3"
+				class="checkbox-primary checkbox mr-3"
 			/>
 			<span class="label-text"
-				>By hitting Download, you are downloading a copy of the photo with your secure <span class="font-normal">Marked<span class="font-bold">Down</span></span>
-				information stored in it. Download our Chrome Extension to scan websites you visit which
-				might have this photo copied on them. Alternatively, go to the "Your photos" tab to check
-				your photos. Remember, if an photo does not have your watermark, you would not be able to
-				see any information.</span
+				>By hitting Download, you are downloading a copy of the photo with your secure <span
+					class="font-normal">Marked<span class="font-bold">Down</span></span
+				>
+				information stored in it. Download our Chrome Extension to scan websites you visit which might
+				have this photo copied on them. Alternatively, go to the "Your photos" tab to check your photos.
+				Remember, if an photo does not have your watermark, you would not be able to see any information.</span
 			>
 		</label>
 		<button
@@ -294,7 +305,10 @@
 				const formData = new FormData();
 				if (imageBlob) formData.append('file', imageBlob);
 
-				formData.append('exif', JSON.stringify(exifData));
+				if (exifData) {
+					formData.append('exif', JSON.stringify(exifData));
+				}
+
 				formData.append('title', title);
 				formData.append('description', description);
 				formData.append('objectId', objectId);
@@ -304,7 +318,7 @@
 					method: 'POST',
 					body: formData
 				});
-                
+
 				if (imageBlob) {
 					const url = window.URL.createObjectURL(imageBlob);
 					const a = document.createElement('a');
