@@ -57,7 +57,7 @@
 					<a
 						href={`https://ik.imagekit.io/wy49ay1bjy4c/markeddown/${image._id}?tr=w-1000`}
 						download={image.title}
-						class="btn btn-primary mb-5 mx-5">Download</a
+						class="btn btn-default mb-5 mx-5">Download</a
 					>
 				</div>
 			</div>

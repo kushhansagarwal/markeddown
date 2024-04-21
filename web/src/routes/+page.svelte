@@ -25,7 +25,7 @@
 
 <div class="navbar bg-base-100 p-3">
 	<div class="flex-1">
-		<a class="btn btn-ghost text-xl">Marked<span class="font-bold">Down</span></a>
+		<a class="btn btn-ghost text-xl"><span>Marked<span class="font-bold">Down</span></span></a>
 	</div>
 	<div class="flex-none gap-2">
 		<div class="dropdown dropdown-end">
@@ -38,7 +38,8 @@
 				tabindex="0"
 				class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
 			>
-				<li><a href="/api/auth/logout">Logout</a></li>
+      <li><a href="/api/auth/logout">Chrome Auth</a></li>
+				<li><a class="font-bold" href="/api/auth/logout">Logout</a></li>
 			</ul>
 		</div>
 	</div>
