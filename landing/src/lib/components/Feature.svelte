@@ -58,10 +58,10 @@
         </p>
 
         <ul class="mt-4 list-inside list-disc text-base">
-          <li>User-Friendly Tools</li>
-          <li>Resource Management</li>
-          <li>Task Assignment</li>
-          <li>Robust Control</li>
+          <li>Scan any website with a single click</li>
+          <li>Access all scanned images in one place</li>
+          <li>Check specific images for watermarks</li>
+          <li>Easily remove watermarking from images</li>
         </ul>
       </div>
 
@@ -86,19 +86,18 @@
       </div>
 
       <div class="lg:mt-8">
-        <div class="badge badge-primary">Workflows</div>
-        <h3 class="mt-2 text-3xl font-semibold">Seamless Integrations</h3>
+        <div class="badge badge-primary">Artificial Intelligence</div>
+        <h3 class="mt-2 text-3xl font-semibold">Cutting Edge AI Integration</h3>
         <p class="mt-2 text-base">
-          Connect key tools seamlessly with our SaaS platform, streamlining your processes and
-          boosting productivity. Experience a cohesive digital ecosystem that empowers your
-          business for innovation and growth.
+          <span class="font-normal"
+            >Marked<span class="font-bold">Down</span></span
+          > employs Google's Gemini 1.5 Pro to examine and embed images in a vector database while using Fetch.ai's Agentverse to ensure seamless scraping and indexing of websites.
         </p>
 
         <ul class="mt-4 list-inside list-disc text-base">
-          <li>Real-time chat with Slack</li>
-          <li>Engage your customer with Email</li>
-          <li>Getting order from Amazon</li>
-          <li>Using Ai from OpenAI</li>
+          <li>Index ~3600 images at a time</li>
+          <li>Sub 10s Agentverse scraping</li>
+          <li>Seamless one-click activation</li>
         </ul>
       </div>
     </div>

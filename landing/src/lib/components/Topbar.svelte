@@ -33,7 +33,7 @@
         <ul class="menu menu-horizontal menu-sm gap-2 px-1">
           <li class="font-medium"><a href="#home">Home</a></li>
           <li class="font-medium"><a href="#features">Features</a></li>
-          <li class="font-medium"><a href="#integrations">Integrations</a></li>
+          <li class="font-medium"><a href="#integrations">Creator</a></li>
           <li class="font-medium"><a href="#pricing">Pricing</a></li>
           <li class="font-medium"><a href="#faq">FAQ</a></li>
         </ul>

@@ -15,5 +15,5 @@ import ThemeToggler from '$/lib/components/ThemeToggler.svelte'
 <Integration/>
 <Pricing/>
 <FAQ/>
-<Footer/>
+<!-- <Footer/> -->
 <ThemeToggler/>
