@@ -61,7 +61,7 @@
         : currentState === state.SUCCESS
           ? "Found!"
           : currentState === state.IDLE
-            ? "Load"
+            ? "Scan"
             : "None"}</button
     >
   </div>
