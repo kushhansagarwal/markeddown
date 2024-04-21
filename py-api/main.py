@@ -17,6 +17,15 @@ import json
 from uagents import Model
 from uagents.query import query
 import datetime
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
+
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+MONGO_URI = os.getenv("MONGO_URI")
+
 
  
 AGENT_ADDRESS = "agent1qw8qj2xy5vwgeux5a208ukkdhr9uwtnjk0pd0nr2eeqgqk2a48u0w3w5k0d"
@@ -30,7 +39,6 @@ async def agent_query(req):
     data = json.loads(response.decode_payload())
     return data["text"]
  
-app = FastAPI()
  
 
 app = FastAPI()
@@ -44,7 +52,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-uri = "mongodb+srv://markeddown:6i0w9fFQqDHrEYsR@markeddown-atlas.vzwdz85.mongodb.net/?retryWrites=true&w=majority&appName=MarkedDown-Atlas";
+uri = MONGO_URI;
 
 client = MongoClient(uri, server_api=ServerApi('1'))
 # Send a ping to confirm a successful connection
@@ -74,7 +82,7 @@ async def create_upload_file(file: UploadFile = File(...)):
 
     mongoId = str(mongo_upload.inserted_id)
 
-    s3 = boto3.client('s3', aws_access_key_id='AKIA4QTK6AMEKL2JO62W', aws_secret_access_key='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')
+    s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
     try:
         s3.upload_file('test_wm.png', 'markeddown', mongoId)
     except ClientError as e:
