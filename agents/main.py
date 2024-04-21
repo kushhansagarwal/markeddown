@@ -1,34 +1,10 @@
-from uagents import Context, Model, Protocol
-from .query import TableStatus
+from uagents import Agent, Context
  
-class BookTableRequest(Model):
-    table_number: int
-    time_start: int
-    duration: int
+alice = Agent(name="alice", seed="alice recovery phrase")
  
-class BookTableResponse(Model):
-    success: bool
+@alice.on_interval(period=2.0)
+async def say_hello(ctx: Context):
+    ctx.logger.info(f'hello, my name is {ctx.name}')
  
-book_proto = Protocol()
-@book_proto.on_message(model=BookTableRequest, replies=BookTableResponse)
-async def handle_book_request(ctx: Context, sender: str, msg: BookTableRequest):
-    tables = {
-        int(num): TableStatus(**status)
-        for (
-            num,
-            status,
-        ) in ctx.storage._data.items()
-        if isinstance(num, int)
-    }
-    table = tables[msg.table_number]
-    if (
-        table.time_start <= msg.time_start
-        and table.time_end >= msg.time_start + msg.duration
-    ):
-        success = True
-        table.time_start = msg.time_start + msg.duration
-        ctx.storage.set(msg.table_number, table.dict())
-    else:
-        success = False
-    # send the response
-    await ctx.send(sender, BookTableResponse(success=success))
+if __name__ == "__main__":
+    alice.run()

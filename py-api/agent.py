@@ -1,32 +1,10 @@
-from uagents import Agent, Context, Model
+from uagents import Agent, Context
  
-class TestRequest(Model):
-    message: str
+alice = Agent(name="alice", seed="alice recovery phrase")
  
-class Response(Model):
-    text: str
- 
-agent = Agent(
-    name="your_agent_name_here",
-    seed="your_agent_seed_here",
-    port=8001,
-    endpoint="http://localhost:8001/submit",
-)
- 
-@agent.on_event("startup")
-async def startup(ctx: Context):
-    ctx.logger.info(f"Starting up {agent.name}")
-    ctx.logger.info(f"With address: {agent.address}")
-    ctx.logger.info(f"And wallet address: {agent.wallet.address()}")
- 
-@agent.on_query(model=TestRequest, replies={Response})
-async def query_handler(ctx: Context, sender: str, _query: TestRequest):
-    ctx.logger.info("Query received")
-    try:
-        # do something here
-        await ctx.send(sender, Response(text="success"))
-    except Exception:
-        await ctx.send(sender, Response(text="fail"))
+@alice.on_interval(period=2.0)
+async def say_hello(ctx: Context):
+    ctx.logger.info(f'hello, my name is {ctx.name}')
  
 if __name__ == "__main__":
-    agent.run()
+    alice.run()

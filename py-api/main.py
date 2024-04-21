@@ -17,37 +17,8 @@ import json
 from uagents import Model
 from uagents.query import query
 
-from uagents import Agent, Context, Model
- 
-class TestRequest(Model):
-    message: str
- 
-class Response(Model):
-    text: str
- 
-agent = Agent(
-    name="your_agent_name_here",
-    seed="your_agent_seed_here",
-    port=8001,
-    endpoint="http://localhost:8001/submit",
-)
- 
-@agent.on_event("startup")
-async def startup(ctx: Context):
-    ctx.logger.info(f"Starting up {agent.name}")
-    ctx.logger.info(f"With address: {agent.address}")
-    ctx.logger.info(f"And wallet address: {agent.wallet.address()}")
- 
-@agent.on_query(model=TestRequest, replies={Response})
-async def query_handler(ctx: Context, sender: str, _query: TestRequest):
-    ctx.logger.info("Query received")
-    try:
-        # do something here
-        await ctx.send(sender, Response(text="success"))
-    except Exception:
-        await ctx.send(sender, Response(text="fail"))
- 
 
+ 
 AGENT_ADDRESS = "agent1qfw3kvv2qwd4r6ghxdtru4pyfk5k8mrtdexq73w9mqd4vw7jqqtg698z0x8"
  
 class TestRequest(Model):
@@ -155,5 +126,4 @@ async def make_agent_call(req: TestRequest):
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=8000)
-    agent.run()
 
